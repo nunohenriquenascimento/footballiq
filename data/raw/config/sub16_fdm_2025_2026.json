@@ -1,0 +1,53 @@
+{
+  "competition": {
+    "internal_id": "liga-sub16-fdm-2025-2026",
+    "name": "Liga Futebol Sub-16 FDM",
+    "association_id": 226,
+    "season_id": 105,
+    "season_name": "2025/2026"
+  },
+  "external_competitions": [
+    {
+      "provider": "FPF",
+      "competition_id": 28712,
+      "sections": [
+        {
+          "phase_order": 1,
+          "phase_name": "1.ª Fase",
+          "group_name": "Grupo A",
+          "competition_level": 1
+        },
+        {
+          "phase_order": 1,
+          "phase_name": "1.ª Fase",
+          "group_name": "Grupo C",
+          "competition_level": 1
+        },
+        {
+          "phase_order": 2,
+          "phase_name": "2.ª Fase",
+          "group_name": "Fase de Campeão",
+          "competition_level": 1
+        }
+      ]
+    },
+    {
+      "provider": "FPF",
+      "competition_id": 28707,
+      "sections": [
+        {
+          "phase_order": 1,
+          "phase_name": "1.ª Fase",
+          "group_name": "Grupo B",
+          "competition_level": 1
+        },
+        {
+          "phase_order": 2,
+          "phase_name": "2.ª Fase",
+          "group_name": "2.ª Divisão",
+          "competition_level": 2
+        }
+      ]
+    }
+  ]
+}

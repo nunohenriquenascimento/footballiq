@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!-- Google Tag Manager -->
+    <script type="4da9abf0d33a5975fd5d00d3-text/javascript">
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TD6NPSH');</script>
+    <!-- End Google Tag Manager -->
+
+    <title>FPF - Centro de Resultados</title>
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <link href="/Content/bootstrap-select.min.css?v=1.0.0.31544" rel="stylesheet" type="text/css">
+    <link href="/Content/bootstrap.min.css?v=1.0.0.31544" rel="stylesheet" type="text/css" />
+    <link href="/Content/normalize.css?v=1.0.0.31544" rel="stylesheet" type="text/css" />
+    <link href="/Content/styles.css?v=1.0.0.31544" rel="stylesheet" type="text/css" />
+    <script src="/Scripts/jquery-3.7.1.min.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+
+    <meta property='og:title' content='Competições da A.F. Guarda | Resultados FPF' />
+<meta property='og:description' content='Acompanhe os resultados de todas as competições da A.F. Guarda.' />
+<meta property='og:url' content='https://resultados.fpf.pt/Competition/GetCompetitionsByAssociation?associationId=226&seasonId=105' />
+<meta property='og:image' content='https://resultados.fpf.pt/Images/SocialMedia/img-fb-share-generica-centro-resultados-partilha.png' />
+<meta property='og:type' content='article' />
+<meta property='fb:app_id' content='818417161601078' />
+
+
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TD6NPSH"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <script type="4da9abf0d33a5975fd5d00d3-text/javascript">
+    function hideCookieBanner() {
+        $('.bannerCookieWarning').hide();
+    }
+</script>
+
+    <div class="bannerCookieWarning">
+        <div class="container">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row no-gutters">
+                    <p class="pull-left">ATEN&#199;&#195;O Este site utiliza cookies. Ao navegar no site estar&#225; a consentir a sua utiliza&#231;&#227;o.
+                        <a href="/Home/CookiesPolicies?Area=" title="">Saiba mais sobre o uso de cookies.</a>
+                    </p>
+                    
+                    <a class="pull-right" data-ajax="true" data-ajax-method="Get" data-ajax-success="hideCookieBanner();" href="/Cookie/CreateCookieWarning?Area=" title="Concordar e fechar">X</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <header class="col-md-12" role="banner">
+        <div class="container">
+            <div class="headerLeft col-md-5">
+                <a href="http://www.fpf.pt" target="_blank" class="fpf-logo">
+                    <img class="img-responsive" src="/Images/logo_fpf.svg" alt="FPF">
+
+                    
+                </a>
+                <a class="logo" href="/" title="">
+                    <img class="img-responsive" src="/Images/logo_resultados_fpf.svg" />
+                </a>
+            </div>
+            <div class="headerRight col-md-7">
+                <nav class="col-md-7 col-sm-12 col-xs-12 pull-right">
+                    <ul>
+                        <li><a href="/" id="homeTabId">In&#237;cio</a></li>
+                        <li><a href="/Competition" id="competitionTabId">Competi&#231;&#245;es</a></li>
+                        <li><a href="/Club" id="clubTabId">Clubes</a></li>
+                    </ul>
+                </nav>
+                
+
+                <span id="BurgerMenu">
+                    <span class="icon"></span>
+                </span>
+
+                <span id="CloseMenuButton">
+                    <span class="icon"></span>
+                </span>
+            </div>
+        </div>
+
+        
+
+    </header>
+
+
+    
+
+<div class="header-title">
+    <div class="container">
+        <div class="col-md-12">
+            <h1>Competi&#231;&#245;es</h1>
+        </div>
+    </div>
+</div>
+<section class="body">
+    <div class="container">
+        <div class="col-md-12">
+            <div class="row row-margin-bottom">
+                <div class="col-md-3 col-sm-3 col-xs-12">
+<form action="/Competition/GetAssociation" data-ajax="true" data-ajax-begin="$(&#39;.loading&#39;).show();" data-ajax-complete="$(&#39;.loading&#39;).hide(); cleanUp();" data-ajax-method="Get" data-ajax-mode="replace" data-ajax-success="OnSuccessAjaxCalls" data-ajax-update="#associationId" id="searchFormId" method="post"><select data-val="true" data-val-number="The field SeasonId must be a number." data-val-required="The SeasonId field is required." id="SeasonId" name="SeasonId"><option value="106">2026-2027</option>
+<option selected="selected" value="105">2025-2026</option>
+<option value="104">2024-2025</option>
+<option value="103">2023-2024</option>
+<option value="102">2022-2023</option>
+<option value="101">2021-2022</option>
+<option value="100">2020-2021</option>
+<option value="99">2019-2020</option>
+<option value="98">2018-2019</option>
+<option value="97">2017-2018</option>
+<option value="96">2016-2017</option>
+<option value="95">2015-2016</option>
+</select><input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="Owner_Id" name="Owner.Id" type="hidden" value="226" /></form>                </div>
+                <div class="clearfix visible-xs"></div>
+            </div>
+        </div>
+    </div>
+    <div id="associationId">
+
+
+<script type="4da9abf0d33a5975fd5d00d3-text/javascript">
+    $(function() {
+
+        $('.accordion').each(function() {
+            var $this = $(this);
+            //$this.find('.accordion-content').hide();
+            var item = $this.find('.accordion-item')[0];
+            if (item && item.toggleClass) {
+                item.toggleClass('open').next().slideToggle();
+            }
+
+            $this.find('.accordion-title').click(function () {
+                $(this).parent().toggleClass('open').next().slideToggle();
+            });
+        });
+
+        $('.containerFootballTypes div').each(function() {
+            var $this = $(this);
+            $this.find('#female').hide();
+
+            $this.find('.tabs-nav a').click(function(event) {
+                event.preventDefault();
+                var navigationActiveValue = $this.find('.tabs-nav').attr('data-navigation-active');
+                var navigationValue = $(this).attr('data-navigation');
+
+                if (navigationActiveValue != navigationValue) {
+                    $this.find('.tabs-nav a').removeClass('active');
+                    $(this).addClass('active');
+
+                    $this.find('.tabs-nav').attr('data-navigation-active', navigationValue);
+
+                    $this.find('#' + navigationActiveValue).hide();
+                    $this.find('#' + navigationValue).show();
+                }
+            });
+        });
+    });
+</script>
+    <div class="container">
+        <div class="section-title no-space col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-1 col-sm-1 no-padding">
+                    <img src="/Club/Logo/874" alt="A.F. Guarda" title="" />
+                </div>
+                <div class="col-md-11 col-sm-11">
+                    <h2>A.F. Guarda</h2>
+                </div>
+            </div>
+        </div>
+        <div class="containerFootballTypes">
+            <div>
+                
+
+
+    <div class="col-md-6 col-sm-6 col-xs-12 info-bar">
+        <div class="col-md-12 col-sm-12 col-xs-12 info-bar-wrapper">Competi&#231;&#245;es de Futebol</div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 info-bar-wrapper tabs-nav text-right" data-navigation-active="male">
+        <a class="active" data-navigation="male">Masculino</a>
+        <a data-navigation="female">Feminino</a>
+        <div class="clearfix"></div>
+    </div>
+    <div id="male">
+        
+
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Senior
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28313&amp;seasonId=105" title="">TA&#199;A DE HONRA COMUNILOG</a>
+                            <a href="/Competition/Details?competitionId=28466&amp;seasonId=105" title="">2&#170; LIGA  FUTEBOL ZERO GRAUS PRODU&#199;&#213;ES</a>
+                            <a href="/Competition/Details?competitionId=28315&amp;seasonId=105" title="">1&#170; LIGA  FUTEBOL CIMA-TAVFER</a>
+                            <a href="/Competition/Details?competitionId=27994&amp;seasonId=105" title="">SUPERTA&#199;A DA BEIRA-INTERIOR</a>
+                            <a href="/Competition/Details?competitionId=28456&amp;seasonId=105" title="">TA&#199;A 2&#170; LIGA ZERO GRAUS PRODU&#199;&#213;ES</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-A(Junior)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28697&amp;seasonId=105" title="">LIGA FUTEBOL SUB-19 FDM</a>
+                            <a href="/Competition/Details?competitionId=28709&amp;seasonId=105" title="">TORNEIO FUTEBOL SUB-19 FDM</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-B(Juvenil)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28712&amp;seasonId=105" title="">LIGA FUTEBOL SUB-16 FDM</a>
+                            <a href="/Competition/Details?competitionId=28707&amp;seasonId=105" title="">LIGA FUTEBOL SUB-16 FDM</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-C(Iniciado)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28703&amp;seasonId=105" title="">LIGA FUTEBOL SUB-14 ALLIANZ-M&#193;RIO SEQUEIRA</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-D(Infantil)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28704&amp;seasonId=105" title="">LIGA FUTEBOL SUB-12 REST. CANTINHO AV&#211;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-E(Benjamim)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29159&amp;seasonId=105" title="">FUT&amp;FUN KIDS BENJAMINS</a>
+                            <a href="/Competition/Details?competitionId=28705&amp;seasonId=105" title="">LIGA FUTEBOL SUB-10 CONDENTE</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-F(Traquina)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29520&amp;seasonId=105" title="">FUT&amp;FUN Traquinas Futebol</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-G(Petiz)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29521&amp;seasonId=105" title="">FUT&amp;FUN PetizesFutebol</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+    <div id="female">
+        
+
+
+
+
+
+    </div>
+
+            </div>
+            <div>
+                
+
+<div class="col-md-6 col-sm-6 col-xs-12 info-bar">
+    <div class="col-md-12 col-sm-12 col-xs-12 info-bar-wrapper">Competi&#231;&#245;es de Futsal</div>
+</div>
+<div class="col-md-6 col-sm-6 col-xs-12 info-bar-wrapper tabs-nav text-right" data-navigation-active="male">
+    <a class="active" data-navigation="male">Masculino</a>
+    <a data-navigation="female">Feminino</a>
+    <div class="clearfix"></div>
+</div>
+<div>
+    <div id="male">
+        
+
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Senior
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28453&amp;seasonId=105" title="">LIGA  FUTSAL SENIOR MASCULINO DAPPIN</a>
+                            <a href="/Competition/Details?competitionId=28455&amp;seasonId=105" title="">TA&#199;A FUTSAL SENIOR MASCULINO COFICAB</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-A(Junior)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28739&amp;seasonId=105" title="">LIGA FUTSAL SUB-19  COPIALTA</a>
+                            <a href="/Competition/Details?competitionId=28742&amp;seasonId=105" title="">TA&#199;A DISTRITAL FUTSAL SUB-19 COPIALTA</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-B(Juvenil)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28740&amp;seasonId=105" title="">LIGA FUTSAL SUB-17 QTA MONTE BRAVO - VINHOS</a>
+                            <a href="/Competition/Details?competitionId=28762&amp;seasonId=105" title="">TA&#199;A DISTRITAL FUTSAL SUB-17 QTA MONTE BRAVO - VINHOS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-C(Iniciado)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28743&amp;seasonId=105" title="">LIGA FUTSAL SUB-15 VIA R&#193;PIDA</a>
+                            <a href="/Competition/Details?competitionId=28764&amp;seasonId=105" title="">TA&#199;A  DISTRITAL FUTSAL SUB-15 VIA R&#193;PIDA </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-D(Infantil)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28745&amp;seasonId=105" title="">LIGA FUTSAL SUB-13  PASTELARIA AVENIDA</a>
+                            <a href="/Competition/Details?competitionId=28766&amp;seasonId=105" title="">TA&#199;A DISTRITAL SUB-13 PASTELARIA AVENIDA</a>
+                            <a href="/Competition/Details?competitionId=29291&amp;seasonId=105" title="">TORNEIO DE ENCERRAMENTO SUB-13 PASTELARIA AVENIDA </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-E(Benjamim)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29196&amp;seasonId=105" title="">FUT&amp;FUN KIDS BENJAMINS - FUTSAL</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-F(Traquina)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29519&amp;seasonId=105" title="">FUT&amp;FUN Traquinas Futsal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Junior-G(Petiz)
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=29522&amp;seasonId=105" title="">FUT&amp;FUN Petizes Futsal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+    <div id="female">
+        
+
+    <div class="accordion col-md-12 col-sm-12 col-xs-12">
+        <div class="accordion-item">
+            <div class="accordion-title col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                    Senior
+                    <span class="arrow"></span>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-content col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="list-links">
+                            <a href="/Competition/Details?competitionId=28442&amp;seasonId=105" title="">LIGA FUTSAL SENIOR FEMININO JUVAN</a>
+                            <a href="/Competition/Details?competitionId=28449&amp;seasonId=105" title="">TA&#199;A  FUTSAL SENIOR FEMININO JUVAN</a>
+                            <a href="/Competition/Details?competitionId=29264&amp;seasonId=105" title="">TORNEIO DE ENCERRAMENTO -  FUTSAL FEMININO JUVAN</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    </div>
+</div>
+
+            </div>
+            <div>
+                
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+    
+</section>
+
+    <section class="container banner"></section>
+
+    <footer>
+        <div class="container">
+            <div class="col-xs-12 mobile-apps">
+                <a href="https://play.google.com/store/apps/details?id=com.futebolnapalmadamao.fpf" target="_blank" title="Google Store"><img height="40" src="/Images/icon-google-store.svg" alt="Google Play" /></a>
+                <a href="https://apps.apple.com/pt/app/joga/id6447292590" target="_blank" title="App Store"><img height="40" src="/Images/icon-app-store.svg" alt="App Store" /></a>
+            </div>
+            <div class="copyright col-md-12">
+                <div class="col-md-2 col-md-offset-2 col-sm-3 col-sm-offset-1 col-xs-12 text-right">
+                    <img src="/Images/footer-logos.png" alt="" title="" />
+                </div>
+                <div class="clearfix visible-xs"></div>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <strong>&copy; Federa&#231;&#227;o Portuguesa de Futebol. Todos os direitos reservados.</strong>
+                </div>
+            </div>
+            <div class="terms col-md-12 col-sm-12 col-xs-12 text-center">
+                Os resultados apresentados s&#243; se tornam oficiais quinze dias ap&#243;s cada encontro. Para mais informa&#231;&#245;es, ler  os
+                <strong>
+                    <a href="/Home/TermsAndConditions">Termos e Condi&#231;&#245;es</a>
+                </strong> |
+                <strong>
+                    <a href="https://www.fpf.pt/pt/FooterMenu/OtherLinks/Politica-de-privacidade">Informa&#231;&#227;o Legal, Privacidade e Seguran&#231;a</a>
+                </strong>
+            </div>
+        </div>
+    </footer>
+
+    <div class="loading">
+        <div class="overlay">
+            <img src="/images/loading.gif" title="" alt="" />
+        </div>
+    </div>
+
+    <script src="/Scripts/bootstrap.min.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+    <script src="/Scripts/bootstrap-select.min.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+    <script src="/Scripts/jquery.unobtrusive-ajax.min.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+    <script src="/Scripts/jquery.masonry.min.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+    <script src="/Scripts/scripts.js?v=1.0.0.31544" type="4da9abf0d33a5975fd5d00d3-text/javascript"></script>
+
+    
+    <script type="4da9abf0d33a5975fd5d00d3-text/javascript">
+        $(function () {
+
+            $('header nav li a#competitionTabId').addClass('active');
+
+            $("#searchFormId select").change(function () {
+                $(this).closest("form").submit();
+            });
+
+            if ($('select').length)
+                $('select').selectpicker({
+                    noneResultsText: "N&#227;o foram encontrados resultados",
+                    style: 'custom-select',
+                    size: 4,
+                    liveSearch: true,
+                    width: '100%'
+                });
+        });
+    </script>
+
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="4da9abf0d33a5975fd5d00d3-|49" defer></script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a224e017bf03e6de',t:'MTc4NTI1MjEwNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"cf87f9bb6f0f4653a1c70f968cceb2f3"}' crossorigin="anonymous"></script>
+</body>
+</html>
