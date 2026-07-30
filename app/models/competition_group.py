@@ -1,7 +1,13 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, String, func
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
@@ -10,36 +16,35 @@ if TYPE_CHECKING:
     from app.models.phase import Phase
 
 
-class Competition(Base):
-    """Competição desportiva disponível no FootballIQ."""
+class CompetitionGroup(Base):
+    """Grupo classificativo pertencente a uma fase."""
 
-    __tablename__ = "competitions"
+    __tablename__ = "competition_groups"
+    __table_args__ = (
+        UniqueConstraint(
+            "phase_id",
+            "group_name",
+            name="uq_competition_groups_phase_id_group_name",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(
         primary_key=True,
         autoincrement=True,
     )
-    internal_id: Mapped[str] = mapped_column(
-        String(100),
-        unique=True,
+    phase_id: Mapped[int] = mapped_column(
+        ForeignKey("phases.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    name: Mapped[str] = mapped_column(
+    group_name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
     )
-    association_id: Mapped[int] = mapped_column(
+    competition_level: Mapped[int] = mapped_column(nullable=False)
+    fpf_competition_id: Mapped[int] = mapped_column(
         nullable=False,
         index=True,
-    )
-    season_id: Mapped[int] = mapped_column(
-        nullable=False,
-        index=True,
-    )
-    season_name: Mapped[str | None] = mapped_column(
-        String(100),
-        nullable=True,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -52,7 +57,7 @@ class Competition(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-    phases: Mapped[list["Phase"]] = relationship(
-        back_populates="competition",
-        cascade="all, delete-orphan",
+
+    phase: Mapped["Phase"] = relationship(
+        back_populates="groups",
     )
