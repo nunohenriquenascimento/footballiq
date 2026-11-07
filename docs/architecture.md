@@ -37,3 +37,47 @@ Manter o import do pacote livre de efeitos laterais.
 O próximo incremento deve definir um pequeno caso de uso, os seus critérios de
 aceitação e os testes correspondentes. Escolhas de armazenamento, APIs e
 infraestrutura exigem uma nova instrução e ficam fora desta fundação.
+
+## Pipeline ETL inicial (FI-004)
+
+A segunda etapa do projeto introduz um pipeline ETL mínimo para registrar
+resultados de partidas de futebol em formato JSON.
+
+### Objetivo
+
+O objetivo pedagógico é mostrar, em código simples, a separação entre:
+
+- Extracção: leitura de dados de origem.
+- Validação: confirmação de estrutura e integridade.
+- Transformação: cálculo de métricas derivadas.
+- Carga: escrita do ficheiro JSON de resultados.
+
+### Decisões
+
+- **Dados fictícios em JSON:** a fonte de dados é um ficheiro local em
+  `data/sample/matches.json`. Evita dependências externas e mantém o processo
+  simples de aprender.
+- **Biblioteca padrão:** a implementação usa apenas `json`, `pathlib` e
+  `argparse`, sem instalar frameworks ou bases de dados.
+- **Separação por fases:** cada etapa reconhece uma responsabilidade concreta,
+  o que melhora testabilidade e facilita a manutenção.
+- **Diretório de resultados:** `results/` fica ignorado no Git para separar o
+  output executado dos ficheiros de código e documentação.
+
+### Execução
+
+O fluxo principal vive em `src/footballiq/etl.py` e pode ser invocado pelo
+pacote com:
+
+```sh
+.venv/bin/python -m footballiq --input data/sample/matches.json --output results/matches_summary.json
+```
+
+A CLI aceita argumentos opcionais para `--input` e `--output`, permitindo testar
+ambientes diferentes sem alterar o código.
+
+### Limites desta fase
+
+Este ETL não persiste em base de dados nem publica APIs. O foco está em criar uma
+base didática de processamento data-centric com validação e testes unitários
+claros.

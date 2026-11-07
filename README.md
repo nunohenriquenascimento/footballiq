@@ -35,6 +35,24 @@ A suite inicial verifica que o pacote instalado pode ser importado pelo nome
 `footballiq`. Ainda não existem testes de negócio, pois não há funcionalidades
 de negócio implementadas.
 
+## Integração contínua (CI)
+
+Este projeto usa GitHub Actions para validar automaticamente o código em cada
+Pull Request e em cada push para a branch `main`.
+
+O workflow em [`.github/workflows/ci.yml`](.github/workflows/ci.yml) executa os
+mesmos comandos verificados localmente:
+
+```sh
+python -m pytest
+python -m ruff check .
+python -m ruff format --check .
+```
+
+A configuração é deliberately simples: apenas instala o pacote em modo editável
+com as dependências de desenvolvimento, usa o runner oficial do GitHub Actions e
+não introduz serviços externos, deploy ou containers nesta etapa.
+
 ## Estrutura
 
 - `README.md`: objetivo, preparação do ambiente e comandos de verificação.
@@ -48,3 +66,34 @@ de negócio implementadas.
 
 Consultar [as decisões de arquitetura](docs/architecture.md) antes de expandir
 o projeto.
+
+## Pipeline ETL inicial
+
+A segunda etapa introduz um pipeline ETL simples para dados fictícios de jogos
+criados em `data/sample/matches.json`.
+
+### Fluxo
+
+1. `Extract`: lê o JSON com as partidas e valida o conteúdo.
+2. `Transform`: calcula métricas por jogo: total de golos, diferença de golos e
+   vencedor (`home`, `away` ou `draw`).
+3. `Load`: grava um ficheiro em `results/matches_summary.json`, que fica ignorado
+   pelo Git para não misturar artefactos de execução com o código do projeto.
+
+### Executar
+
+Instalar o pacote em modo editável no ambiente de desenvolvimento:
+
+```sh
+.venv/bin/python -m pip install -e '.[dev]'
+```
+
+Executar o pipeline com os dados de exemplo:
+
+```sh
+.venv/bin/python -m footballiq --input data/sample/matches.json --output results/matches_summary.json
+```
+
+O módulo `footballiq.etl` expõe funções separadas para extração, validação,
+transformação, carregamento e execução do pipeline. A estrutura foi desenhada para
+ser fácil de testar sem depender de bibliotecas externas.

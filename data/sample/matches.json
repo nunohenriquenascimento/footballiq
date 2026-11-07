@@ -1,0 +1,42 @@
+[
+  {
+    "match_id": 101,
+    "home_team": "Benfica",
+    "away_team": "Porto",
+    "home_goals": 2,
+    "away_goals": 1,
+    "status": "finished"
+  },
+  {
+    "match_id": 102,
+    "home_team": "Sporting",
+    "away_team": "Braga",
+    "home_goals": 1,
+    "away_goals": 1,
+    "status": "finished"
+  },
+  {
+    "match_id": 103,
+    "home_team": "Ajax",
+    "away_team": "PSV",
+    "home_goals": 0,
+    "away_goals": 3,
+    "status": "finished"
+  },
+  {
+    "match_id": 104,
+    "home_team": "Arsenal",
+    "away_team": "Chelsea",
+    "home_goals": 2,
+    "away_goals": 0,
+    "status": "finished"
+  },
+  {
+    "match_id": 105,
+    "home_team": "Real Madrid",
+    "away_team": "Barcelona",
+    "home_goals": 1,
+    "away_goals": 1,
+    "status": "finished"
+  }
+]
