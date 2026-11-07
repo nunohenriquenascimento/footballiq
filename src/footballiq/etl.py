@@ -8,56 +8,34 @@ from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
+from pydantic import ValidationError
 
-def _validate_int_field(
-    value: Any,
-    field_name: str,
-    *,
-    minimum: int = 0,
-    allow_zero: bool = True,
-) -> int:
-    """Valida inteiros simples, rejeitando booleanos e valores fora do intervalo."""
-    if isinstance(value, bool) or not isinstance(value, int):
-        raise ValueError(f"{field_name} must be an integer.")
-    if value < minimum or (not allow_zero and value == 0):
-        raise ValueError(f"{field_name} must be greater than or equal to {minimum}.")
-    return value
+from footballiq.schemas.match import FootballMatch
 
 
 def validate_match(raw_match: dict[str, Any]) -> dict[str, Any]:
-    """Valida uma partida, garantindo que os campos essenciais estão corretos."""
+    """Valida uma partida, mantendo a API pública em ValueError.
+
+    O modelo Pydantic gera ValidationError, mas a CLI e as funções públicas do ETL
+    continuam a usar ValueError para manter a interface antiga simples e legível.
+    """
     if not isinstance(raw_match, dict):
         raise ValueError("Match must be an object.")
 
-    match_id = _validate_int_field(raw_match.get("match_id"), "match_id", minimum=1)
-    home_team = raw_match.get("home_team")
-    if not isinstance(home_team, str) or not home_team.strip():
-        raise ValueError("home_team must be a non-empty string.")
+    try:
+        normalized = FootballMatch.model_validate(raw_match)
+    except ValidationError as exc:
+        formatted_messages: list[str] = []
+        for error in exc.errors():
+            location = error.get("loc", ("value",))
+            field_name = str(location[-1]) if location else "value"
+            message = error.get("msg", "Invalid value")
+            formatted_messages.append(f"{field_name}: {message}")
+        raise ValueError(
+            f"Invalid match data: {'; '.join(formatted_messages)}"
+        ) from exc
 
-    away_team = raw_match.get("away_team")
-    if not isinstance(away_team, str) or not away_team.strip():
-        raise ValueError("away_team must be a non-empty string.")
-    if home_team.strip() == away_team.strip():
-        raise ValueError("home_team and away_team must be different.")
-
-    home_goals = _validate_int_field(
-        raw_match.get("home_goals"), "home_goals", minimum=0
-    )
-    away_goals = _validate_int_field(
-        raw_match.get("away_goals"), "away_goals", minimum=0
-    )
-    status = raw_match.get("status")
-    if status != "finished":
-        raise ValueError("status must be 'finished'.")
-
-    normalized = dict(raw_match)
-    normalized["match_id"] = match_id
-    normalized["home_team"] = home_team.strip()
-    normalized["away_team"] = away_team.strip()
-    normalized["home_goals"] = home_goals
-    normalized["away_goals"] = away_goals
-    normalized["status"] = "finished"
-    return normalized
+    return normalized.model_dump()
 
 
 def extract_matches(input_path: str | Path) -> list[dict[str, Any]]:
