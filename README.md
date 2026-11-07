@@ -89,6 +89,42 @@ O teste valida apenas a ligação ao PostgreSQL e confirma que a base ativa é
 - Testes de integração: exigem a variável `FOOTBALLIQ_DB_RUN_INTEGRATION=1` e
   o alvo `footballiq_dev`; são reservados para validação local do ambiente.
 
+## Persistência idempotente para PostgreSQL
+
+A função `persist_matches` vive em `src/footballiq/db/persistence.py` e aceita uma
+sequência de partidas já validadas pelo ETL. Ela usa a chave de negócio
+`(source, source_match_id)` e executa `INSERT ... ON CONFLICT DO UPDATE` para
+manter a carga idempotente.
+
+```python
+from footballiq.db.persistence import persist_matches
+
+with connect() as connection:
+    try:
+        connection.execute("BEGIN;")
+        count = persist_matches(matches, source="sample", connection=connection)
+        connection.rollback()
+    except Exception:
+        connection.rollback()
+        raise
+```
+
+A regra de transação fica controlada pelo chamador. A função não decide por si
+`COMMIT` ou `ROLLBACK`; se receber uma conexão, respeita a transação existente e
+somente grava os dados no contexto da operação atual. Se não receber uma
+conexão, cria a sua própria ligação, mas continua a depender do bloco `with` do
+objeto `psycopg` para fechar a sessão.
+
+A resolução de equipas para `source='sample'` é provisória e baseada no nome da
+equipa em contexto de carga. O projeto não assume `UNIQUE` global em
+`teams.name` e levanta erro explícito quando o mesmo nome aparece em múltiplas
+linhas da tabela, em vez de escolher arbitrariamente uma linha.
+
+A persistência é também mais segura do que uma carga ad hoc porque usa parâmetros
+SQL em todos os inserts e não altera jogos de outras fontes. A lógica restringe
+os updates ao mesmo `source` e `source_match_id`, preservando a integridade do
+resto dos dados.
+
 ## Integração contínua (CI)
 
 Este projeto usa GitHub Actions para validar automaticamente o código em cada
