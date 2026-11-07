@@ -89,6 +89,19 @@ O teste valida apenas a ligação ao PostgreSQL e confirma que a base ativa é
 - Testes de integração: exigem a variável `FOOTBALLIQ_DB_RUN_INTEGRATION=1` e
   o alvo `footballiq_dev`; são reservados para validação local do ambiente.
 
+## CI com PostgreSQL temporário
+
+O workflow em [`.github/workflows/ci.yml`](.github/workflows/ci.yml) cria um
+serviço PostgreSQL 17 em execução isolada no GitHub Actions, prepara a base
+`footballiq_dev` e usa uma role de aplicação `footballiq` com permissões mínimas
+para validar a persistência idempotente sem depender de credenciais locais.
+
+A preparação do ambiente usa uma ligação administrativa temporária apenas para
+criar a base e o esquema; os testes de persistência continuam a executar com a
+role de aplicação, nunca com `postgres` ou outra conta administrativa. Isso
+mantém o fluxo seguro, previsível e compatível com o controlo de transações do
+projeto.
+
 ## Persistência idempotente para PostgreSQL
 
 A função `persist_matches` vive em `src/footballiq/db/persistence.py` e aceita uma
