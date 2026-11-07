@@ -1,0 +1,18 @@
+# Ambiente e segredos locais; o exemplo permanece versionável.
+.venv/
+.env
+.env.*
+!.env.example
+
+# Ficheiros gerados por Python, ferramentas e empacotamento.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.coverage
+htmlcov/
+
+.DS_Store
