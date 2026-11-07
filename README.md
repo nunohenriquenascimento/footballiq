@@ -48,3 +48,34 @@ de negócio implementadas.
 
 Consultar [as decisões de arquitetura](docs/architecture.md) antes de expandir
 o projeto.
+
+## Pipeline ETL inicial
+
+A segunda etapa introduz um pipeline ETL simples para dados fictícios de jogos
+criados em `data/sample/matches.json`.
+
+### Fluxo
+
+1. `Extract`: lê o JSON com as partidas e valida o conteúdo.
+2. `Transform`: calcula métricas por jogo: total de golos, diferença de golos e
+   vencedor (`home`, `away` ou `draw`).
+3. `Load`: grava um ficheiro em `results/matches_summary.json`, que fica ignorado
+   pelo Git para não misturar artefactos de execução com o código do projeto.
+
+### Executar
+
+Instalar o pacote em modo editável no ambiente de desenvolvimento:
+
+```sh
+.venv/bin/python -m pip install -e '.[dev]'
+```
+
+Executar o pipeline com os dados de exemplo:
+
+```sh
+.venv/bin/python -m footballiq --input data/sample/matches.json --output results/matches_summary.json
+```
+
+O módulo `footballiq.etl` expõe funções separadas para extração, validação,
+transformação, carregamento e execução do pipeline. A estrutura foi desenhada para
+ser fácil de testar sem depender de bibliotecas externas.

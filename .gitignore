@@ -14,5 +14,6 @@ build/
 dist/
 .coverage
 htmlcov/
+results/
 
 .DS_Store
