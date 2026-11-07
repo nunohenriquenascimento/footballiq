@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Portefólio de dados e inteligência artificial aplicado ao futebol."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = ["pydantic>=2.11,<3"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9,<10", "ruff>=0.14,<1"]
