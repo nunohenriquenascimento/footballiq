@@ -13,9 +13,32 @@ permissions:
 
 jobs:
   quality-checks:
-    name: Python quality checks
+    name: Python quality checks and PostgreSQL integration
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+
+    env:
+      FOOTBALLIQ_DB_HOST: 127.0.0.1
+      FOOTBALLIQ_DB_PORT: 5432
+      FOOTBALLIQ_DB_NAME: footballiq_dev
+      FOOTBALLIQ_DB_USER: footballiq
+      FOOTBALLIQ_DB_PASSWORD: footballiq_ci_password
+      FOOTBALLIQ_DB_SSLMODE: disable
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Check out repository
@@ -35,11 +58,50 @@ jobs:
         # disponíveis no mesmo runner do GitHub Actions.
         run: python -m pip install -e '.[dev]'
 
-      - name: Run pytest
-        run: python -m pytest
+      - name: Prepare PostgreSQL for CI
+        env:
+          PGPASSWORD: postgres
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: postgres
+        run: |
+          set -euo pipefail
+
+          # O ambiente de CI usa uma database temporária isolada e uma role de
+          # aplicação específica. A role administrativa é apenas usada para criar o
+          # esquema e os privilégios mínimos, não para executar os testes.
+          psql -d postgres -v ON_ERROR_STOP=1 -tc "SELECT 1 FROM pg_roles WHERE rolname = 'footballiq';" | grep -q 1 \
+            || psql -d postgres -v ON_ERROR_STOP=1 -c "CREATE ROLE footballiq WITH LOGIN PASSWORD '${FOOTBALLIQ_DB_PASSWORD}';"
+
+          psql -d postgres -v ON_ERROR_STOP=1 -tc "SELECT 1 FROM pg_database WHERE datname = 'footballiq_dev';" | grep -q 1 \
+            || psql -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE footballiq_dev OWNER postgres;"
+
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -f sql/schema/001_initial_schema.sql
+
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT CONNECT ON DATABASE footballiq_dev TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT USAGE ON SCHEMA public TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT SELECT ON TABLE public.competitions TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT SELECT ON TABLE public.teams TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT SELECT (id, name, created_at) ON TABLE public.teams TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT INSERT (name) ON TABLE public.teams TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT SELECT ON TABLE public.matches TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT SELECT (id, competition_id, source, source_match_id, home_team_id, away_team_id, home_goals, away_goals, status, created_at) ON TABLE public.matches TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT INSERT (source, source_match_id, home_team_id, away_team_id, home_goals, away_goals, status, competition_id) ON TABLE public.matches TO footballiq;"
+          psql -d footballiq_dev -v ON_ERROR_STOP=1 -c "GRANT UPDATE (home_team_id, away_team_id, home_goals, away_goals, status, competition_id) ON TABLE public.matches TO footballiq;"
+
+      - name: Run unit tests
+        run: python -m pytest -q
+
+      - name: Run PostgreSQL integration tests
+        env:
+          FOOTBALLIQ_DB_RUN_INTEGRATION: "1"
+        run: python -m pytest tests/test_db_integration.py -q
 
       - name: Run Ruff lint
         run: python -m ruff check .
 
       - name: Run Ruff format check
         run: python -m ruff format --check .
+
+      - name: Run pip check
+        run: python -m pip check

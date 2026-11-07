@@ -35,6 +35,109 @@ A suite inicial verifica que o pacote instalado pode ser importado pelo nome
 `footballiq`. Ainda não existem testes de negócio, pois não há funcionalidades
 de negócio implementadas.
 
+## Ligação local ao PostgreSQL
+
+A camada de leitura do projeto usa `psycopg` 3 para consultar a base de dados
+local do FootballIQ sem qualquer escrita, atualização ou eliminação.
+
+Adicionar a dependência do pacote no ambiente virtual:
+
+```sh
+.venv/bin/python -m pip install -e '.[dev]'
+```
+
+Definir as variáveis de ambiente necessárias (sem guardar segredos no código):
+
+```sh
+export FOOTBALLIQ_DB_HOST=127.0.0.1
+export FOOTBALLIQ_DB_PORT=5432
+export FOOTBALLIQ_DB_NAME=footballiq_dev
+export FOOTBALLIQ_DB_USER=footballiq
+export FOOTBALLIQ_DB_PASSWORD=""
+export FOOTBALLIQ_DB_SSLMODE=prefer
+```
+
+O projeto não assume uma role fixa. O utilizador é obrigatório e deve ser
+fornecido por `FOOTBALLIQ_DB_USER`; o valor concreto depende do cluster local.
+Na máquina validada, a role correta para a base `footballiq_dev` foi `footballiq`.
+
+O ficheiro [.env.example](.env.example) contém o mesmo exemplo sem segredos.
+A base `footballiq_dev` deve existir e ser a única alvo da integração. Quando a
+configuração fica incompleta, a aplicação não tenta ligar a outra base por
+inferência.
+
+### Teste de integração opcional
+
+Os testes de integração são explícitos e desativados por defeito. Só devem
+executar-se quando o ambiente de desenvolvimento estiver corretamente configurado
+para `footballiq_dev`:
+
+```sh
+export FOOTBALLIQ_DB_RUN_INTEGRATION=1
+export FOOTBALLIQ_DB_NAME=footballiq_dev
+export FOOTBALLIQ_DB_USER=footballiq
+.venv/bin/python -m pytest tests/test_db_integration.py -v
+```
+
+O teste valida apenas a ligação ao PostgreSQL e confirma que a base ativa é
+`footballiq_dev`. Não realiza inserções, alterações ou exclusões.
+
+### Testes unitários versus integração
+
+- Testes unitários: validam configuração e lógica de leitura sem depender do
+  servidor PostgreSQL; executam-se por defeito.
+- Testes de integração: exigem a variável `FOOTBALLIQ_DB_RUN_INTEGRATION=1` e
+  o alvo `footballiq_dev`; são reservados para validação local do ambiente.
+
+## CI com PostgreSQL temporário
+
+O workflow em [`.github/workflows/ci.yml`](.github/workflows/ci.yml) cria um
+serviço PostgreSQL 17 em execução isolada no GitHub Actions, prepara a base
+`footballiq_dev` e usa uma role de aplicação `footballiq` com permissões mínimas
+para validar a persistência idempotente sem depender de credenciais locais.
+
+A preparação do ambiente usa uma ligação administrativa temporária apenas para
+criar a base e o esquema; os testes de persistência continuam a executar com a
+role de aplicação, nunca com `postgres` ou outra conta administrativa. Isso
+mantém o fluxo seguro, previsível e compatível com o controlo de transações do
+projeto.
+
+## Persistência idempotente para PostgreSQL
+
+A função `persist_matches` vive em `src/footballiq/db/persistence.py` e aceita uma
+sequência de partidas já validadas pelo ETL. Ela usa a chave de negócio
+`(source, source_match_id)` e executa `INSERT ... ON CONFLICT DO UPDATE` para
+manter a carga idempotente.
+
+```python
+from footballiq.db.persistence import persist_matches
+
+with connect() as connection:
+    try:
+        connection.execute("BEGIN;")
+        count = persist_matches(matches, source="sample", connection=connection)
+        connection.rollback()
+    except Exception:
+        connection.rollback()
+        raise
+```
+
+A regra de transação fica controlada pelo chamador. A função não decide por si
+`COMMIT` ou `ROLLBACK`; se receber uma conexão, respeita a transação existente e
+somente grava os dados no contexto da operação atual. Se não receber uma
+conexão, cria a sua própria ligação, mas continua a depender do bloco `with` do
+objeto `psycopg` para fechar a sessão.
+
+A resolução de equipas para `source='sample'` é provisória e baseada no nome da
+equipa em contexto de carga. O projeto não assume `UNIQUE` global em
+`teams.name` e levanta erro explícito quando o mesmo nome aparece em múltiplas
+linhas da tabela, em vez de escolher arbitrariamente uma linha.
+
+A persistência é também mais segura do que uma carga ad hoc porque usa parâmetros
+SQL em todos os inserts e não altera jogos de outras fontes. A lógica restringe
+os updates ao mesmo `source` e `source_match_id`, preservando a integridade do
+resto dos dados.
+
 ## Integração contínua (CI)
 
 Este projeto usa GitHub Actions para validar automaticamente o código em cada
