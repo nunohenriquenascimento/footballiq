@@ -35,6 +35,60 @@ A suite inicial verifica que o pacote instalado pode ser importado pelo nome
 `footballiq`. Ainda não existem testes de negócio, pois não há funcionalidades
 de negócio implementadas.
 
+## Ligação local ao PostgreSQL
+
+A camada de leitura do projeto usa `psycopg` 3 para consultar a base de dados
+local do FootballIQ sem qualquer escrita, atualização ou eliminação.
+
+Adicionar a dependência do pacote no ambiente virtual:
+
+```sh
+.venv/bin/python -m pip install -e '.[dev]'
+```
+
+Definir as variáveis de ambiente necessárias (sem guardar segredos no código):
+
+```sh
+export FOOTBALLIQ_DB_HOST=127.0.0.1
+export FOOTBALLIQ_DB_PORT=5432
+export FOOTBALLIQ_DB_NAME=footballiq_dev
+export FOOTBALLIQ_DB_USER=footballiq
+export FOOTBALLIQ_DB_PASSWORD=""
+export FOOTBALLIQ_DB_SSLMODE=prefer
+```
+
+O projeto não assume uma role fixa. O utilizador é obrigatório e deve ser
+fornecido por `FOOTBALLIQ_DB_USER`; o valor concreto depende do cluster local.
+Na máquina validada, a role correta para a base `footballiq_dev` foi `footballiq`.
+
+O ficheiro [.env.example](.env.example) contém o mesmo exemplo sem segredos.
+A base `footballiq_dev` deve existir e ser a única alvo da integração. Quando a
+configuração fica incompleta, a aplicação não tenta ligar a outra base por
+inferência.
+
+### Teste de integração opcional
+
+Os testes de integração são explícitos e desativados por defeito. Só devem
+executar-se quando o ambiente de desenvolvimento estiver corretamente configurado
+para `footballiq_dev`:
+
+```sh
+export FOOTBALLIQ_DB_RUN_INTEGRATION=1
+export FOOTBALLIQ_DB_NAME=footballiq_dev
+export FOOTBALLIQ_DB_USER=footballiq
+.venv/bin/python -m pytest tests/test_db_integration.py -v
+```
+
+O teste valida apenas a ligação ao PostgreSQL e confirma que a base ativa é
+`footballiq_dev`. Não realiza inserções, alterações ou exclusões.
+
+### Testes unitários versus integração
+
+- Testes unitários: validam configuração e lógica de leitura sem depender do
+  servidor PostgreSQL; executam-se por defeito.
+- Testes de integração: exigem a variável `FOOTBALLIQ_DB_RUN_INTEGRATION=1` e
+  o alvo `footballiq_dev`; são reservados para validação local do ambiente.
+
 ## Integração contínua (CI)
 
 Este projeto usa GitHub Actions para validar automaticamente o código em cada

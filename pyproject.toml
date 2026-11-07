@@ -8,7 +8,10 @@ version = "0.1.0"
 description = "Portefólio de dados e inteligência artificial aplicado ao futebol."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["pydantic>=2.11,<3"]
+dependencies = [
+    "pydantic>=2.11,<3",
+    "psycopg[binary]>=3.2,<4",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=9,<10", "ruff>=0.14,<1"]
@@ -20,6 +23,9 @@ where = ["src"]
 testpaths = ["tests"]
 # Testar o pacote instalado evita esconder erros de empacotamento com o PYTHONPATH.
 addopts = "--import-mode=importlib --strict-config --strict-markers"
+markers = [
+    "integration: testes de integração com PostgreSQL local e desativados por defeito.",
+]
 
 [tool.ruff]
 target-version = "py314"
