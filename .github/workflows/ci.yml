@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality-checks:
+    name: Python quality checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install package in editable mode with development dependencies
+        # Mantemos a instalação em modo editável para refletir o comportamento do
+        # ambiente local e garantir que o pacote e as ferramentas de dev estejam
+        # disponíveis no mesmo runner do GitHub Actions.
+        run: python -m pip install -e '.[dev]'
+
+      - name: Run pytest
+        run: python -m pytest
+
+      - name: Run Ruff lint
+        run: python -m ruff check .
+
+      - name: Run Ruff format check
+        run: python -m ruff format --check .

@@ -35,6 +35,24 @@ A suite inicial verifica que o pacote instalado pode ser importado pelo nome
 `footballiq`. Ainda não existem testes de negócio, pois não há funcionalidades
 de negócio implementadas.
 
+## Integração contínua (CI)
+
+Este projeto usa GitHub Actions para validar automaticamente o código em cada
+Pull Request e em cada push para a branch `main`.
+
+O workflow em [`.github/workflows/ci.yml`](.github/workflows/ci.yml) executa os
+mesmos comandos verificados localmente:
+
+```sh
+python -m pytest
+python -m ruff check .
+python -m ruff format --check .
+```
+
+A configuração é deliberately simples: apenas instala o pacote em modo editável
+com as dependências de desenvolvimento, usa o runner oficial do GitHub Actions e
+não introduz serviços externos, deploy ou containers nesta etapa.
+
 ## Estrutura
 
 - `README.md`: objetivo, preparação do ambiente e comandos de verificação.
