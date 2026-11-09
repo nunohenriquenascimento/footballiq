@@ -34,6 +34,9 @@ Para gerar o dashboard autónomo e abri-lo explicitamente no navegador:
 Sem servidor ou recursos externos; por defeito escreve num ficheiro temporário.
 Ver [dashboard local e política de sobrescrita](docs/ai-analyst-dashboard.md).
 
+O dashboard inclui tendências competitivas descritivas, com cobertura e versões:
+ver [fórmulas, amostras e limitações](docs/competitive-trends.md).
+
 As secções seguintes documentam a fundação Python e a evolução do ETL e da
 persistência. A demonstração factual funciona de forma independente dessas ligações.
 

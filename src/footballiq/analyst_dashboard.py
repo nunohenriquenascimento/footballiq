@@ -8,6 +8,7 @@ from pathlib import Path
 
 from footballiq.analyst_interpretation import InterpretationResult, prepare_facts
 from footballiq.analytics import FactualReport, MetricSummary
+from footballiq.trends import TREND_LABELS, UNAVAILABLE_REASONS, calculate_trends
 
 _CSS = """
 :root{color-scheme:light;--ink:#152536;--muted:#526375;--line:#dde4e9;
@@ -180,6 +181,97 @@ def _ai(report: FactualReport, interpretation: InterpretationResult | None) -> s
     )
 
 
+def _trend_number(value: int | float) -> str:
+    """Limita a apresentação a três decimais; assinala aproximações sem alterar factos."""
+    if isinstance(value, int):
+        return str(value)
+    rounded = round(value, 3)
+    text = f"{rounded:.3f}".rstrip("0").rstrip(".").replace(".", ",")
+    return ("≈ " if rounded != value else "") + text
+
+
+def _trends(report: FactualReport) -> str:
+    """Apresenta amostras e motivos com escape, sem gráficos ou extrapolação."""
+    trends = calculate_trends(report)
+    labels = {"win": "V", "draw": "E", "loss": "D", None: "?"}
+    rows = "".join(
+        f"<li>Jogo {_e(g.match_id)} · {_e(g.kickoff_at)} · "
+        f"{'Casa' if g.is_home else 'Fora'} · {_e(labels[g.outcome])} · "
+        f"GF {_e(g.goals_for if g.goals_for is not None else 'Indisponível')} · "
+        f"GA {_e(g.goals_against if g.goals_against is not None else 'Indisponível')} · "
+        f"Diferença {_e(g.goal_difference if g.goal_difference is not None else 'Indisponível')} · "
+        f"Versão {_e(g.data_version)} · {'Resultado não verificado' if g.reason else 'Resultado verificado'}</li>"
+        for g in trends.games
+    )
+    samples = []
+    for title, sample in (
+        ("Janela", trends.window),
+        ("Casa", trends.home),
+        ("Fora", trends.away),
+        ("Mais antigos", trends.older),
+        ("Mais recentes", trends.newer),
+    ):
+        values = sample.covered_values
+        body = (
+            "<p>Indisponível.</p>"
+            if values is None
+            else "<dl>"
+            + "".join(
+                f"<div><dt>{_e(TREND_LABELS[key])}</dt><dd>{_e(_trend_number(value))}</dd></div>"
+                for key, value in values.items()
+            )
+            + "</dl>"
+        )
+        samples.append(
+            f'<article class="metric"><h3>{title}</h3><p>Cobertura {len(sample.used_ids)}/{len(sample.selected_ids)}; '
+            f"IDs utilizados: {_e(', '.join(sample.used_ids) or 'Nenhum')}. "
+            f"IDs selecionados: {_e(', '.join(sample.selected_ids) or 'Nenhum')}.</p>"
+            f"<p>{_e(UNAVAILABLE_REASONS.get(sample.reason, 'Total da amostra disponível'))}</p>"
+            + (
+                "<p>Subtotal apenas — total indisponível.</p>"
+                if sample.values is None and values
+                else ""
+            )
+            + body
+            + (
+                "<p>Variabilidade indisponível: exige dois resultados verificados.</p>"
+                if len(sample.used_ids) < 2
+                else ""
+            )
+            + (
+                f"<p>Estabilidade indisponível: {_e(UNAVAILABLE_REASONS[sample.stability_reason])}</p>"
+                if sample.stability_reason
+                else ""
+            )
+            + "</article>"
+        )
+    comparison = "Indisponível: " + UNAVAILABLE_REASONS.get(trends.temporal_reason, "")
+    if trends.temporal_change is not None:
+        comparison = (
+            f"Média GF: {_trend_number(trends.temporal_change['average_goals_for'])}; "
+            f"média GA: {_trend_number(trends.temporal_change['average_goals_against'])}."
+        )
+    return (
+        '<section id="trends" aria-labelledby="trends-title"><h2 id="trends-title">Tendências competitivas</h2>'
+        "<p>Dados fictícios. Ordem: mais antigo primeiro. V Vitória · E Empate · D Derrota · ? Indisponível.</p>"
+        + (
+            f"<ol>{rows}</ol>"
+            if rows
+            else "<p>Não há jogos para apresentar tendências.</p>"
+        )
+        + f'<div class="metrics">{"".join(samples)}</div>'
+        f"<p>Comparação temporal, recente menos antigo: {_e(comparison)}</p>"
+        f"<p>Comparação casa/fora: {_e(UNAVAILABLE_REASONS.get(trends.venue_reason, 'disponível; consultar amostras e denominadores acima'))}</p>"
+        "<p>Grupos pequenos e de dimensão possivelmente diferente; médias descritivas, sem significância estatística. "
+        "Variância e amplitude exigem dois resultados; estabilidade usa apenas pares adjacentes verificados, sem saltar lacunas. "
+        "A contagem de resultados iguais não é um índice de estabilidade nem uma previsão. "
+        "Empates de data/hora são ordenados pelo ID, sem estabelecer precedência temporal. "
+        "Valores apresentados com até três decimais; ≈ indica arredondamento. "
+        "Não permitem concluir causas nem extrapolar para a época.</p>"
+        f"<p>Snapshot {_e(trends.snapshot_version)} · Fórmula {_e(trends.formula_version)}</p></section>"
+    )
+
+
 def render_dashboard(
     report: FactualReport,
     interpretation: InterpretationResult | None = None,
@@ -266,7 +358,7 @@ def render_dashboard(
 <meta name="referrer" content="no-referrer"><title>FootballIQ · AI Analyst · Demonstração</title><style>{_CSS}</style></head>
 <body><a class="skip" href="#content">Saltar para o conteúdo</a>
 <header class="sidebar"><div class="brand"><span class="brand-mark">FIQ</span><span class="brand-name">Football<small>IQ</small></span></div>
-<nav aria-label="Navegação do relatório"><a href="#overview">Visão geral</a><a href="#games">Jogos analisados</a><a href="#statistics">Estatísticas</a><a href="#analyst">AI Analyst</a><a href="#references">Referências</a></nav>
+<nav aria-label="Navegação do relatório"><a href="#overview">Visão geral</a><a href="#games">Jogos analisados</a><a href="#statistics">Estatísticas</a><a href="#trends">Tendências</a><a href="#analyst">AI Analyst</a><a href="#references">Referências</a></nav>
 <p class="sidebar-note">LABORATÓRIO LOCAL<br>Snapshot de demonstração<br>Sem ligação a dados operacionais</p></header>
 <main id="content" tabindex="-1"><div class="topbar"><span class="eyebrow">Demonstração / Análise da equipa</span><span class="badge">DADOS FICTÍCIOS</span></div>
 <section id="overview" aria-labelledby="page-title"><div class="eyebrow">Inteligência a partir dos factos</div><h1 id="page-title">AI Analyst</h1><p class="muted">A leitura dos últimos jogos, com cobertura e evidência à vista.</p>
@@ -275,6 +367,7 @@ def render_dashboard(
 <div class="cards">{"".join(cards)}</div><div class="form-strip"><div><span class="eyebrow">Sequência · mais recente primeiro</span><ol class="sequence" aria-label="Sequência de resultados">{"".join(sequence)}</ol></div><p class="legend">V Vitória · E Empate · D Derrota · ? Não verificado</p></div></section>
 <section class="two-columns" aria-label="Jogos e interpretação"><article class="panel" id="games"><div class="panel-header"><div><h2>Jogos analisados</h2><p class="muted small">Ordem cronológica inversa · marcados–sofridos</p></div><span class="counter">{_e(count)} jogos</span></div>{match_content}</article>{_ai(report, interpretation)}</section>
 <section id="statistics" aria-labelledby="statistics-title"><div class="section-head"><div><h2 id="statistics-title">Estatísticas com contexto</h2><p class="muted small">Cobertura n/N dos jogos selecionados. Indisponível não significa zero.</p></div></div><div class="metrics">{metrics}</div></section>
+{_trends(report)}
 <section class="panel quality" aria-labelledby="quality-title"><h2 id="quality-title">Qualidade e limites de leitura</h2><ul>{warnings}<li>Dados fictícios: estados verified/complete são declarações da fixture, não certificação operacional.</li><li>Não se apresentam pontos oficiais sem regulamento validado.</li><li>Este HTML não prova autorização, autenticidade ou atualidade na origem.</li></ul></section>
 <section id="references" aria-labelledby="references-title"><h2 id="references-title">Referências auditáveis</h2><p class="muted small">Expanda cada jogo para consultar versões e evidências.</p><div class="meta"><span>Origem: {_e(report.source_system)}/{_e(report.source_instance_id)}</span><span class="wrap">Snapshot: {_e(report.snapshot_version)}</span><span>Fórmulas: {_e(competitive.formula_version)}</span><span>Exportado: {_e(report.exported_at.isoformat())}</span></div><div class="reference-list">{reference_content}</div></section>
 <footer class="footer"><span>FootballIQ · Dados fictícios — demonstração local</span><span>Factos primeiro. Interpretação separada.</span></footer></main></body></html>"""
