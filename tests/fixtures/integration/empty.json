@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "source_system": "match_tracker",
+  "source_instance_id": "fictional-local-demo",
+  "exported_at": "2026-11-09T10:00:00Z",
+  "snapshot_version": "synthetic-empty-v1",
+  "authorized_scope": {
+    "scope_id": "demo-scope-a",
+    "club_id": "demo-club-a",
+    "team_id": "42",
+    "permission": "matches:export"
+  },
+  "selection": {
+    "team_id": "42",
+    "season_id": "7",
+    "competition_scope": "all",
+    "competition_id": null,
+    "as_of": "2026-11-09T10:00:00Z",
+    "limit": 5,
+    "returned_count": 0,
+    "order": "kickoff_at_desc_source_match_id_numeric_desc"
+  },
+  "matches": []
+}

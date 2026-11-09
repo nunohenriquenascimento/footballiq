@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "source_system": "match_tracker",
+  "source_instance_id": "fictional-local-demo",
+  "exported_at": "2026-11-09T10:00:00Z",
+  "snapshot_version": "demo-selection-v1",
+  "authorized_scope": {
+    "scope_id": "demo-scope-a",
+    "club_id": "demo-club-a",
+    "team_id": "42",
+    "permission": "matches:export"
+  },
+  "selection": {
+    "team_id": "42",
+    "season_id": "7",
+    "competition_scope": "all",
+    "competition_id": null,
+    "as_of": "2026-11-09T10:00:00Z",
+    "limit": 5,
+    "returned_count": 1,
+    "order": "kickoff_at_desc_source_match_id_numeric_desc"
+  },
+  "matches": [
+    {
+      "source_match_id": "901",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-08T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "55",
+        "name": "Clube Fictício B"
+      },
+      "away_team": {
+        "team_id": "42",
+        "name": "Clube Fictício A"
+      },
+      "score": {
+        "home_goals": null,
+        "away_goals": null,
+        "status": "unverified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "event:3001"
+          ],
+          "verified_at": null
+        }
+      },
+      "events": [
+        {
+          "source_event_id": "3001",
+          "source_match_id": "901",
+          "event_type": "OWN_GOAL",
+          "team_id": "55",
+          "period": 1,
+          "elapsed_seconds": 600,
+          "minute": 10,
+          "player": null,
+          "related_player": null
+        }
+      ],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "partial",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "shots": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "cards": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "substitutions": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "other_events": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "demo-match-901-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "901"
+      }
+    }
+  ]
+}

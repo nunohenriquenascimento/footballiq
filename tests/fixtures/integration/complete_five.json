@@ -1,0 +1,520 @@
+{
+  "schema_version": "1.0",
+  "source_system": "match_tracker",
+  "source_instance_id": "fictional-local-demo",
+  "exported_at": "2026-11-09T10:00:00Z",
+  "snapshot_version": "synthetic-five-v1",
+  "authorized_scope": {
+    "scope_id": "demo-scope-a",
+    "club_id": "demo-club-a",
+    "team_id": "42",
+    "permission": "matches:export"
+  },
+  "selection": {
+    "team_id": "42",
+    "season_id": "7",
+    "competition_scope": "all",
+    "competition_id": null,
+    "as_of": "2026-11-09T10:00:00Z",
+    "limit": 5,
+    "returned_count": 5,
+    "order": "kickoff_at_desc_source_match_id_numeric_desc"
+  },
+  "matches": [
+    {
+      "source_match_id": "10",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-08T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "42",
+        "name": "Equipa Ficticia A"
+      },
+      "away_team": {
+        "team_id": "55",
+        "name": "Equipa Ficticia B"
+      },
+      "score": {
+        "home_goals": 2,
+        "away_goals": 1,
+        "status": "verified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "match:10"
+          ],
+          "verified_at": "2026-11-09T09:00:00Z"
+        }
+      },
+      "events": [
+        {
+          "source_event_id": "1000",
+          "source_match_id": "10",
+          "event_type": "SHOT_ON_TARGET",
+          "team_id": "42",
+          "period": 1,
+          "elapsed_seconds": 500,
+          "minute": 8,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1001",
+          "source_match_id": "10",
+          "event_type": "GOAL",
+          "team_id": "42",
+          "period": 1,
+          "elapsed_seconds": 600,
+          "minute": 10,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1002",
+          "source_match_id": "10",
+          "event_type": "YELLOW_CARD",
+          "team_id": "55",
+          "period": 1,
+          "elapsed_seconds": 700,
+          "minute": 11,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1003",
+          "source_match_id": "10",
+          "event_type": "SUBSTITUTION",
+          "team_id": "42",
+          "period": 1,
+          "elapsed_seconds": 800,
+          "minute": 13,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1004",
+          "source_match_id": "10",
+          "event_type": "OWN_GOAL",
+          "team_id": "55",
+          "period": 2,
+          "elapsed_seconds": 3000,
+          "minute": 50,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1005",
+          "source_match_id": "10",
+          "event_type": "OWN_GOAL",
+          "team_id": "42",
+          "period": 2,
+          "elapsed_seconds": 3600,
+          "minute": 60,
+          "player": null,
+          "related_player": null
+        }
+      ],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "shots": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "cards": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "substitutions": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "other_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "synthetic-match-10-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "10"
+      }
+    },
+    {
+      "source_match_id": "9",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-08T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "55",
+        "name": "Equipa Ficticia B"
+      },
+      "away_team": {
+        "team_id": "42",
+        "name": "Equipa Ficticia A"
+      },
+      "score": {
+        "home_goals": 0,
+        "away_goals": 1,
+        "status": "verified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "match:9"
+          ],
+          "verified_at": "2026-11-09T09:00:00Z"
+        }
+      },
+      "events": [
+        {
+          "source_event_id": "1100",
+          "source_match_id": "9",
+          "event_type": "GOAL",
+          "team_id": "42",
+          "period": 1,
+          "elapsed_seconds": 900,
+          "minute": 15,
+          "player": null,
+          "related_player": null
+        }
+      ],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "shots": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "cards": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "substitutions": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "other_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "synthetic-match-9-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "9"
+      }
+    },
+    {
+      "source_match_id": "8",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-07T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "42",
+        "name": "Equipa Ficticia A"
+      },
+      "away_team": {
+        "team_id": "55",
+        "name": "Equipa Ficticia B"
+      },
+      "score": {
+        "home_goals": 1,
+        "away_goals": 1,
+        "status": "verified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "match:8"
+          ],
+          "verified_at": "2026-11-09T09:00:00Z"
+        }
+      },
+      "events": [
+        {
+          "source_event_id": "1200",
+          "source_match_id": "8",
+          "event_type": "GOAL",
+          "team_id": "42",
+          "period": 1,
+          "elapsed_seconds": 100,
+          "minute": 1,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1201",
+          "source_match_id": "8",
+          "event_type": "GOAL",
+          "team_id": "55",
+          "period": 1,
+          "elapsed_seconds": 200,
+          "minute": 3,
+          "player": null,
+          "related_player": null
+        }
+      ],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "shots": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "cards": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "substitutions": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "other_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "synthetic-match-8-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "8"
+      }
+    },
+    {
+      "source_match_id": "7",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-06T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "55",
+        "name": "Equipa Ficticia B"
+      },
+      "away_team": {
+        "team_id": "42",
+        "name": "Equipa Ficticia A"
+      },
+      "score": {
+        "home_goals": 2,
+        "away_goals": 0,
+        "status": "verified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "match:7"
+          ],
+          "verified_at": "2026-11-09T09:00:00Z"
+        }
+      },
+      "events": [
+        {
+          "source_event_id": "1300",
+          "source_match_id": "7",
+          "event_type": "GOAL",
+          "team_id": "55",
+          "period": 1,
+          "elapsed_seconds": 100,
+          "minute": 1,
+          "player": null,
+          "related_player": null
+        },
+        {
+          "source_event_id": "1301",
+          "source_match_id": "7",
+          "event_type": "GOAL",
+          "team_id": "55",
+          "period": 1,
+          "elapsed_seconds": 200,
+          "minute": 3,
+          "player": null,
+          "related_player": null
+        }
+      ],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "shots": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "cards": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "substitutions": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "other_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "synthetic-match-7-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "7"
+      }
+    },
+    {
+      "source_match_id": "6",
+      "team_id": "42",
+      "season_id": "7",
+      "competition_id": null,
+      "kickoff_at": "2026-11-05T15:00:00Z",
+      "timezone": "Europe/Lisbon",
+      "status": "FINISHED",
+      "home_team": {
+        "team_id": "42",
+        "name": "Equipa Ficticia A"
+      },
+      "away_team": {
+        "team_id": "55",
+        "name": "Equipa Ficticia B"
+      },
+      "score": {
+        "home_goals": 0,
+        "away_goals": 0,
+        "status": "verified",
+        "provenance": {
+          "method": "events",
+          "reference_ids": [
+            "match:6"
+          ],
+          "verified_at": "2026-11-09T09:00:00Z"
+        }
+      },
+      "events": [],
+      "squad": null,
+      "quality": {
+        "score_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "shots": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "cards": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "substitutions": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "other_events": {
+          "status": "complete",
+          "evidence": "Certificacao ficticia de teste",
+          "assessed_at": "2026-11-09T09:00:00Z"
+        },
+        "player_attribution": {
+          "status": "unknown",
+          "evidence": null,
+          "assessed_at": null
+        },
+        "squad": {
+          "status": "unavailable",
+          "evidence": null,
+          "assessed_at": null
+        }
+      },
+      "data_version": "synthetic-match-6-v1",
+      "updated_at": null,
+      "source_reference": {
+        "resource": "internal_match",
+        "id": "6"
+      }
+    }
+  ]
+}
