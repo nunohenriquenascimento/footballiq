@@ -3,8 +3,39 @@
 Projeto de portefólio dedicado a Data Science, Data Engineering, Machine Learning
 e AI Engineering no contexto do futebol.
 
-Esta primeira etapa contém apenas a fundação Python: não inclui funcionalidades
-de negócio, base de dados, API ou infraestrutura.
+## Demonstração do AI Analyst — dados fictícios
+
+Com o pacote instalado em modo editável e num checkout completo:
+
+```powershell
+.\.venv\Scripts\python.exe -m footballiq.analyst_demo
+```
+
+Responde à pergunta «Analisa os últimos cinco jogos da minha equipa.» com o motor
+factual existente, sem LLM, rede ou base de dados. Mostra resultados, cobertura,
+avisos e referências. Ver [cenários e limitações](docs/ai-analyst-demo.md).
+
+Para seleção opcional de observações por um modelo Ollama já instalado:
+
+```powershell
+.\.venv\Scripts\python.exe -m footballiq.analyst_demo --with-llm --model qwen3:8b
+```
+
+O factual permanece disponível se o servidor ou o modelo falhar. O nome acima é
+apenas um exemplo; não há instalação automática. Ver [validação e configuração
+Ollama](docs/ollama-analyst.md).
+
+Para gerar o dashboard autónomo e abri-lo explicitamente no navegador:
+
+```powershell
+.\.venv\Scripts\python.exe -m footballiq.analyst_demo --html --open
+```
+
+Sem servidor ou recursos externos; por defeito escreve num ficheiro temporário.
+Ver [dashboard local e política de sobrescrita](docs/ai-analyst-dashboard.md).
+
+As secções seguintes documentam a fundação Python e a evolução do ETL e da
+persistência. A demonstração factual funciona de forma independente dessas ligações.
 
 ## Ambiente de desenvolvimento
 
