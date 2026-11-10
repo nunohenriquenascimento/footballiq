@@ -89,6 +89,58 @@ class EvidenceBundle:
                 )
         object.__setattr__(self, "facts", MappingProxyType(normalized))
 
+    def authorized_evidence_ids(self, fact_id: str) -> tuple[str, ...]:
+        """Deriva IDs de conteúdo por facto, versão, snapshot e proveniência.
+
+        Reutiliza referências estruturadas da API factual. Tendências apontam
+        para os mesmos jogos do catálogo. Sem referências de jogos, o ID apenas
+        identifica o facto agregado; não declara uma origem operacional nova.
+        Estes IDs não são credenciais nem provas criptográficas de origem.
+        """
+        fact = self.facts[fact_id]
+        if fact.get("snapshot_version", self.snapshot_id) != self.snapshot_id:
+            raise ValueError("fact belongs to a different evidence snapshot")
+        version = fact.get("fact_version")
+        if not isinstance(version, str) or not version:
+            raise ValueError("trusted fact_version is required for evidence_id")
+        provenance = list(fact.get("references", ()))
+        if fact.get("fact_kind") == "match":
+            provenance = [fact["match"]["reference"]]
+        resolved = []
+        for reference in provenance:
+            if isinstance(reference, str):
+                match = self.facts[reference]
+                if match.get("snapshot_version") != self.snapshot_id:
+                    raise ValueError(
+                        "reference belongs to a different evidence snapshot"
+                    )
+                reference = match["match"]["reference"]
+            resolved.append(reference)
+        # A ausência de jogos (por exemplo, métricas vazias) conserva apenas
+        # a identidade do facto; não fabrica uma referência a um jogo.
+        payloads = resolved or [None]
+        return tuple(
+            sorted(
+                {
+                    "evidence:"
+                    + hashlib.sha256(
+                        _canonical_json(
+                            {
+                                "snapshot_id": self.snapshot_id,
+                                "bundle_digest": self.evidence_digest,
+                                "fact_id": fact_id,
+                                "fact_version": version,
+                                "source_system": fact.get("source_system"),
+                                "source_instance_id": fact.get("source_instance_id"),
+                                "reference": _plain_fact_value(reference),
+                            }
+                        ).encode("utf-8")
+                    ).hexdigest()
+                    for reference in payloads
+                }
+            )
+        )
+
     def __contains__(self, key: object) -> bool:
         return str(key) in self.facts
 
@@ -115,6 +167,15 @@ class EvidenceBundle:
 
     def as_dict(self) -> dict[str, Any]:
         return dict(self.facts)
+
+
+def _plain_fact_value(value: Any) -> Any:
+    """Converte cópias imutáveis em valores JSON sem alterar o bundle."""
+    if isinstance(value, Mapping):
+        return {key: _plain_fact_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_plain_fact_value(item) for item in value]
+    return value
 
 
 def _canonical_json(value: Any) -> str:
@@ -382,6 +443,12 @@ class GroundedNarrativeValidator:
                     )
                 seen_fact_ids.add(fact_id)
 
+            expected_references = {
+                (fact_id, evidence_id)
+                for fact_id in assertion.fact_ids
+                for evidence_id in self.available_facts.authorized_evidence_ids(fact_id)
+            }
+            seen_references: set[tuple[str, str]] = set()
             for reference in assertion.references:
                 if _contains_prompt_injection(reference.fact_id):
                     raise ValueError(
@@ -408,6 +475,19 @@ class GroundedNarrativeValidator:
                     raise ValueError(
                         "references must be sourced from the factual engine"
                     )
+
+                identity = (reference.fact_id, reference.evidence_id)
+                if identity in seen_references:
+                    raise ValueError("duplicate evidence_id reference")
+                if identity not in expected_references:
+                    raise ValueError(
+                        "evidence_id is not authorized for this fact/snapshot"
+                    )
+                seen_references.add(identity)
+            if seen_references != expected_references:
+                raise ValueError(
+                    "missing required evidence_id references for assertion"
+                )
 
         if not seen_fact_ids:
             raise ValueError("plan must contain at least one fact_id")
@@ -630,7 +710,7 @@ def render_plan(plan: NarrativePlan, available_facts: Any) -> str:
             segments.append(
                 f"Observação: o agregado verificado para {label} é {value:.2f}. "
                 f"Cobertura {plan.coverage:.2f}; amostra {plan.sample_size}. "
-                f"Referência: {assertion.references[0].evidence_id}."
+                f"Referência: {', '.join(facts.authorized_evidence_ids(fact_id))}."
             )
         elif assertion.template == "comparison_mean_ordered":
             left_id = assertion.left_fact_id

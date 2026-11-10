@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from footballiq.analytics import analyze_recent_matches
+from footballiq.analytics import FactualReport, analyze_recent_matches
 from footballiq.grounded_narrative import (
     EvidenceBundle,
     EvidenceReference,
@@ -55,6 +55,20 @@ VALID_FACTS = {
 }
 
 
+def _references(bundle: EvidenceBundle, fact_id: str) -> list[EvidenceReference]:
+    """Obtém todas as referências autorizadas pelo backend para um facto."""
+    return [
+        EvidenceReference(
+            fact_id=fact_id,
+            fact_version=bundle[fact_id]["fact_version"],
+            evidence_id=evidence_id,
+            evidence_digest=bundle.evidence_digest,
+            source="factual-engine",
+        )
+        for evidence_id in bundle.authorized_evidence_ids(fact_id)
+    ]
+
+
 def _valid_plan() -> NarrativePlan:
     return NarrativePlan(
         schema_version=NarrativeSchemaVersion.V1,
@@ -72,7 +86,9 @@ def _valid_plan() -> NarrativePlan:
                     EvidenceReference(
                         fact_id="fact:season:2024",
                         fact_version="v1",
-                        evidence_id="evidence-001",
+                        evidence_id=EvidenceBundle(
+                            "snapshot-001", "digest-123", VALID_FACTS
+                        ).authorized_evidence_ids("fact:season:2024")[0],
                         evidence_digest="digest-123",
                         source="factual-engine",
                     )
@@ -91,14 +107,18 @@ def _valid_plan() -> NarrativePlan:
                     EvidenceReference(
                         fact_id="fact:team:benfica",
                         fact_version="v1",
-                        evidence_id="evidence-002",
+                        evidence_id=EvidenceBundle(
+                            "snapshot-001", "digest-123", VALID_FACTS
+                        ).authorized_evidence_ids("fact:team:benfica")[0],
                         evidence_digest="digest-123",
                         source="factual-engine",
                     ),
                     EvidenceReference(
                         fact_id="fact:team:porto",
                         fact_version="v1",
-                        evidence_id="evidence-003",
+                        evidence_id=EvidenceBundle(
+                            "snapshot-001", "digest-123", VALID_FACTS
+                        ).authorized_evidence_ids("fact:team:porto")[0],
                         evidence_digest="digest-123",
                         source="factual-engine",
                     ),
@@ -284,7 +304,9 @@ def test_incompatible_evidence_version_is_rejected() -> None:
                         EvidenceReference(
                             fact_id="fact:season:2024",
                             fact_version="v99",
-                            evidence_id="evidence-001",
+                            evidence_id=EvidenceBundle(
+                                "snapshot-001", "digest-123", VALID_FACTS
+                            ).authorized_evidence_ids("fact:season:2024")[0],
                             evidence_digest="digest-123",
                             source="factual-engine",
                         )
@@ -494,15 +516,7 @@ def test_real_e2e_complete_five_uses_factual_pipeline() -> None:
                 fact_ids=["match:10"],
                 relation=NarrativeRelation.AGGREGATE_RESULT,
                 presentation_order=1,
-                references=[
-                    EvidenceReference(
-                        fact_id="match:10",
-                        fact_version=report.matches[0].reference.data_version,
-                        evidence_id="evidence-10",
-                        evidence_digest=bundle.evidence_digest,
-                        source="factual-engine",
-                    )
-                ],
+                references=_references(bundle, "match:10"),
                 template="observation_aggregate_result",
             )
         ],
@@ -629,15 +643,7 @@ def test_real_factual_report_builds_grounded_catalog() -> None:
                 fact_ids=[first_id],
                 relation=NarrativeRelation.AGGREGATE_RESULT,
                 presentation_order=1,
-                references=[
-                    EvidenceReference(
-                        fact_id=first_id,
-                        fact_version=report.matches[0].reference.data_version,
-                        evidence_id="evidence-10",
-                        evidence_digest=bundle.evidence_digest,
-                        source="factual-engine",
-                    )
-                ],
+                references=_references(bundle, first_id),
                 template="observation_aggregate_result",
             ),
             NarrativeAssertion(
@@ -648,22 +654,8 @@ def test_real_factual_report_builds_grounded_catalog() -> None:
                 right_fact_id=third_id,
                 comparison_operator="gte",
                 presentation_order=2,
-                references=[
-                    EvidenceReference(
-                        fact_id=second_id,
-                        fact_version=catalog[second_id]["fact_version"],
-                        evidence_id="evidence-competitive",
-                        evidence_digest=bundle.evidence_digest,
-                        source="factual-engine",
-                    ),
-                    EvidenceReference(
-                        fact_id=third_id,
-                        fact_version=catalog[third_id]["fact_version"],
-                        evidence_id="evidence-trend-window",
-                        evidence_digest=bundle.evidence_digest,
-                        source="factual-engine",
-                    ),
-                ],
+                references=_references(bundle, second_id)
+                + _references(bundle, third_id),
                 template="comparison_mean_ordered",
             ),
         ],
@@ -697,3 +689,264 @@ def test_real_factual_report_builds_grounded_catalog() -> None:
                 }
             )
         )
+
+
+def test_invented_evidence_id_audit_regression() -> None:
+    """O identificador inventado da auditoria falha mesmo com metadados válidos."""
+    bundle = EvidenceBundle(
+        snapshot_id="snapshot-001", evidence_digest="digest-123", facts=VALID_FACTS
+    )
+    payload = _valid_plan().model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = (
+        "invented-reference-FI009-audit"
+    )
+    plan = NarrativePlan.model_validate(payload)
+    with pytest.raises(ValueError, match="evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(plan)
+    with pytest.raises(ValueError, match="evidence_id"):
+        render_plan(plan, bundle)
+
+
+def _fixture_report(name: str = "complete_five") -> FactualReport:
+    """Carrega apenas o relatório sintético usado nos testes offline."""
+    return analyze_recent_matches(
+        json.loads(Path(f"tests/fixtures/integration/{name}.json").read_text())
+    )
+
+
+def _backend_plan(bundle: EvidenceBundle, *fact_ids: str) -> NarrativePlan:
+    """Constrói um plano pela API pública com referências emitidas pelo backend."""
+    return NarrativePlan(
+        schema_version="1.0",
+        evidence_snapshot_id=bundle.snapshot_id,
+        evidence_digest=bundle.evidence_digest,
+        coverage=1.0,
+        sample_size=len(fact_ids),
+        assertions=[
+            NarrativeAssertion(
+                assertion_type="observation",
+                fact_ids=[fact_id],
+                relation=NarrativeRelation.AGGREGATE_RESULT,
+                presentation_order=index,
+                references=_references(bundle, fact_id),
+                template="observation_aggregate_result",
+            )
+            for index, fact_id in enumerate(fact_ids, 1)
+        ],
+    )
+
+
+def test_backend_evidence_id_is_valid() -> None:
+    """A identidade canónica emitida pelo bundle é aceite e renderizada."""
+    bundle = build_available_facts(_fixture_report())
+    plan = _backend_plan(bundle, "match:10")
+    assert GroundedNarrativeValidator(bundle).validate(plan) == plan
+    text = render_plan(plan, bundle)
+    assert all(eid in text for eid in bundle.authorized_evidence_ids("match:10"))
+
+
+def test_evidence_id_from_another_fact_is_rejected() -> None:
+    """Existir no bundle não autoriza usar a evidência noutro facto."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = (
+        bundle.authorized_evidence_ids("match:9")[0]
+    )
+    with pytest.raises(ValueError, match="evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_evidence_id_from_another_snapshot_is_rejected() -> None:
+    """O mesmo jogo e versão não autorizam reutilização entre snapshots."""
+    report = _fixture_report()
+    bundle = build_available_facts(report)
+    changed = report.model_dump(mode="json")
+    changed["snapshot_version"] = "other-snapshot"
+    other = build_available_facts(type(report).model_validate(changed))
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = (
+        other.authorized_evidence_ids("match:10")[0]
+    )
+    with pytest.raises(ValueError, match="evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_evidence_id_from_another_version_is_rejected() -> None:
+    """Um ID antigo não passa mesmo que o plano declare a versão atual."""
+    report = _fixture_report()
+    bundle = build_available_facts(report)
+    changed = report.model_dump(mode="json")
+    changed["matches"][0]["reference"]["data_version"] = "other-version"
+    other = build_available_facts(type(report).model_validate(changed))
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = (
+        other.authorized_evidence_ids("match:10")[0]
+    )
+    with pytest.raises(ValueError, match="evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_evidence_id_is_required() -> None:
+    """Uma referência sem evidence_id não é representável no contrato público."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    del payload["assertions"][0]["references"][0]["evidence_id"]
+    with pytest.raises(ValueError, match="evidence_id"):
+        NarrativePlan.model_validate(payload)
+
+
+def test_duplicate_evidence_id_is_rejected() -> None:
+    """Duplicar uma referência válida não aumenta a evidência disponível."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    refs = payload["assertions"][0]["references"]
+    refs.append(dict(refs[0]))
+    with pytest.raises(ValueError, match="duplicate evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_valid_fact_with_false_reference_is_rejected() -> None:
+    """O facto real não legitima uma referência livre com formato plausível."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = "evidence:" + "0" * 64
+    with pytest.raises(ValueError, match="evidence_id"):
+        render_plan(NarrativePlan.model_validate(payload), bundle)
+
+
+def test_missing_metric_evidence_is_rejected() -> None:
+    """Uma métrica agregada exige todas as referências que contribuíram para ela."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "metric:competitive").model_dump()
+    refs = payload["assertions"][0]["references"]
+    assert len(refs) == 5
+    refs.pop()
+    with pytest.raises(ValueError, match="missing required evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_missing_asserted_fact_reference_is_rejected() -> None:
+    """Uma comparação não pode omitir as referências de um dos seus factos."""
+    bundle = EvidenceBundle("snapshot-001", "digest-123", VALID_FACTS)
+    payload = _valid_plan().model_dump()
+    payload["assertions"][1]["references"].pop()
+    with pytest.raises(ValueError, match="missing required evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_unasserted_fact_reference_is_rejected() -> None:
+    """Mesmo autorizada, uma referência alheia à afirmação é rejeitada."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"].extend(
+        ref.model_dump() for ref in _references(bundle, "match:9")
+    )
+    with pytest.raises(ValueError, match="evidence_id"):
+        GroundedNarrativeValidator(bundle).validate(
+            NarrativePlan.model_validate(payload)
+        )
+
+
+def test_mixed_plan_is_rejected_before_rendering(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A segunda afirmação inválida impede até a renderização da primeira."""
+    from footballiq.grounded_narrative import contract
+
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10", "match:9").model_dump()
+    payload["assertions"][1]["references"][0]["evidence_id"] = (
+        "invented-reference-FI009-audit"
+    )
+
+    def unexpected_render(*args: object, **kwargs: object) -> None:
+        pytest.fail("O renderer começou antes da validação integral")
+
+    monkeypatch.setattr(contract, "_numeric_value_from_fact", unexpected_render)
+    with pytest.raises(ValueError, match="evidence_id"):
+        render_plan(NarrativePlan.model_validate(payload), bundle)
+
+
+def test_rejection_preserves_factual_fallback() -> None:
+    """O consumidor pode conservar o factual intacto quando o plano é rejeitado.
+
+    O contrato não implementa um orquestrador de fallback: propaga ValueError.
+    Este teste verifica a política do consumidor sem acrescentar outra API.
+    """
+    report = _fixture_report()
+    before = report.model_dump(mode="json")
+    bundle = build_available_facts(report)
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    payload["assertions"][0]["references"][0]["evidence_id"] = (
+        "invented-reference-FI009-audit"
+    )
+    with pytest.raises(ValueError, match="evidence_id"):
+        render_plan(NarrativePlan.model_validate(payload), bundle)
+    assert report.model_dump(mode="json") == before
+    assert build_available_facts(report) == bundle
+    # O fallback é o relatório factual original, sem texto parcial do plano.
+    assert "invented-reference-FI009-audit" not in report.model_dump_json()
+
+
+@pytest.mark.parametrize("scenario", ["complete_five", "partial_match", "empty"])
+def test_offline_backend_evidence_pipeline(
+    scenario: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Percorre o pipeline sintético sem permitir ligações de rede."""
+    import socket
+
+    from footballiq.trends import calculate_trends
+
+    def forbidden_network(*args: object, **kwargs: object) -> None:
+        pytest.fail("O pipeline offline tentou aceder à rede")
+
+    monkeypatch.setattr(socket, "socket", forbidden_network)
+    monkeypatch.setattr(socket, "create_connection", forbidden_network)
+    report = _fixture_report(scenario)
+    before = report.model_dump(mode="json")
+    trends = calculate_trends(report)
+    bundle = build_available_facts(report, trends=trends)
+    assert bundle == build_available_facts(report)
+    if not report.matches:
+        # Sem jogos não há plano admissível com amostra positiva: mantém-se
+        # o factual vazio. Não se fabrica uma observação para forçar um render.
+        with pytest.raises(ValueError, match="sample_size|assertions"):
+            _backend_plan(bundle)
+        assert not any(key.startswith("match:") for key in bundle)
+    else:
+        fid = f"match:{report.matches[0].reference.source_match_id}"
+        plan = _backend_plan(bundle, fid)
+        GroundedNarrativeValidator(bundle).validate(plan)
+        text = render_plan(plan, bundle)
+        assert text == render_plan(plan, bundle)
+        assert text.split("Referência: ", 1)[1].removesuffix(".") == ", ".join(
+            bundle.authorized_evidence_ids(fid)
+        )
+        with pytest.raises(TypeError):
+            bundle[fid]["match"]["reference"]["data_version"] = "changed"
+    assert report.model_dump(mode="json") == before
+
+
+@pytest.mark.parametrize("missing", ["references", "empty_references"])
+def test_assertion_requires_explicit_references(missing: str) -> None:
+    """A API pública rejeita listas ausentes ou vazias antes de validar o plano."""
+    bundle = build_available_facts(_fixture_report())
+    payload = _backend_plan(bundle, "match:10").model_dump()
+    if missing == "references":
+        del payload["assertions"][0]["references"]
+    else:
+        payload["assertions"][0]["references"] = []
+    with pytest.raises(ValueError, match="references"):
+        NarrativePlan.model_validate(payload)
