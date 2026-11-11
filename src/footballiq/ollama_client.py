@@ -5,6 +5,7 @@ from __future__ import annotations
 import http.client
 import json
 import re
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
@@ -46,11 +47,14 @@ class OllamaSettings:
 
     Não lê .env, proxies ou credenciais. O nome do modelo não implica instalação
     e o cliente não tenta fazer download. O timeout aplica-se a operações de socket.
+    deadline limita o orçamento total (1–30 s); a leitura verifica o relógio entre
+    blocos. Não interrompe transportes injetados nem o parser de cabeçalhos HTTP.
     """
 
     model: str
     url: str = "http://127.0.0.1:11434"
     timeout: float = 5.0
+    deadline: float = 15.0
 
     def __post_init__(self) -> None:
         """Valida configuração antes de abrir qualquer ligação."""
@@ -78,28 +82,51 @@ class OllamaSettings:
             raise OllamaUnavailable("invalid_settings")
         if type(self.timeout) not in {int, float} or not 1 <= self.timeout <= 10:
             raise OllamaUnavailable("invalid_settings")
+        if type(self.deadline) not in {int, float} or not 1 <= self.deadline <= 30:
+            raise OllamaUnavailable("invalid_settings")
 
 
 Transport = Callable[[OllamaSettings, bytes], bytes]
 
 
 def _post(settings: OllamaSettings, payload: bytes) -> bytes:
+    expires = time.monotonic() + settings.deadline
     parsed = urlsplit(settings.url)
     # localhost é resolvido explicitamente para loopback; sem proxies ou redirects.
     host = "::1" if parsed.hostname == "::1" else "127.0.0.1"
     connection = http.client.HTTPConnection(
-        host, parsed.port or 80, timeout=settings.timeout
+        host, parsed.port or 80, timeout=min(settings.timeout, settings.deadline)
     )
     try:
         connection.request(
             "POST", "/api/chat", payload, {"Content-Type": "application/json"}
         )
+        remaining = expires - time.monotonic()
+        if remaining <= 0:
+            raise OllamaUnavailable("timeout")
+        if connection.sock is not None:
+            connection.sock.settimeout(min(settings.timeout, remaining))
         response = connection.getresponse()
         if response.status == 404:
             raise OllamaUnavailable("model_not_found")
         if response.status != 200:
             raise OllamaUnavailable("http_error")
-        data = response.read(MAX_RESPONSE_BYTES + 1)
+        chunks = []
+        size = 0
+        while True:
+            remaining = expires - time.monotonic()
+            if remaining <= 0:
+                raise OllamaUnavailable("timeout")
+            if connection.sock is not None:
+                connection.sock.settimeout(min(settings.timeout, remaining))
+            chunk = response.read1(min(4096, MAX_RESPONSE_BYTES + 1 - size))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            size += len(chunk)
+            if size > MAX_RESPONSE_BYTES:
+                raise OllamaUnavailable("response_too_large")
+        data = b"".join(chunks)
         if len(data) > MAX_RESPONSE_BYTES:
             raise OllamaUnavailable("response_too_large")
         return data
@@ -151,7 +178,10 @@ class OllamaClient:
         try:
             if len(payload) > MAX_REQUEST_BYTES:
                 raise OllamaUnavailable("request_too_large")
+            started = time.monotonic()
             data = self.transport(self.settings, payload)
+            if time.monotonic() - started >= self.settings.deadline:
+                raise OllamaUnavailable("timeout")
             if len(data) > MAX_RESPONSE_BYTES:
                 raise OllamaUnavailable("response_too_large")
             envelope = _Envelope.model_validate(strict_json(data.decode("utf-8")))
