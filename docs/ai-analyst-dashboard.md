@@ -36,6 +36,10 @@ trocar de cenário ou atualizar a interpretação, gerar outro ficheiro. A sele�
 Ollama ocorre em Python antes da escrita e só com `--with-llm`; o browser não
 contacta Ollama. Sem opt-in, a geração é inteiramente offline.
 
+A FI-009.2.3.1 acrescenta a alternativa `--html --with-narrative` para planos
+fundamentados revalidados. As duas opções de IA são mutuamente exclusivas.
+Consultar [arquitetura, estados e comandos](grounded-narrative-dashboard.md).
+
 ## Política de escrita
 
 Por defeito, cada execução cria um novo `footballiq-demo-*.html` no diretório

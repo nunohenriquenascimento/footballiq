@@ -8,6 +8,12 @@ from pathlib import Path
 
 from footballiq.analyst_interpretation import InterpretationResult, prepare_facts
 from footballiq.analytics import FactualReport, MetricSummary
+from footballiq.grounded_narrative.contract import (
+    GroundedNarrativeValidator,
+    NarrativePlan,
+    build_available_facts,
+)
+from footballiq.grounded_narrative.orchestrator import NarrativeResult, prepare_plans
 from footballiq.trends import TREND_LABELS, UNAVAILABLE_REASONS, calculate_trends
 
 _CSS = """
@@ -181,6 +187,84 @@ def _ai(report: FactualReport, interpretation: InterpretationResult | None) -> s
     )
 
 
+def _grounded_ai(report: FactualReport, narrative: NarrativeResult) -> str:
+    """Revalida a seleção fechada e apresenta apenas factos do relatório atual.
+
+    O estado available e o texto do dataclass não provam validade. Reconstruímos
+    o bundle e exigimos um dos planos autorizados, incluindo cobertura e amostra.
+    O texto de apresentação é local; nunca reutiliza texto ou referências livres.
+    """
+    state = "disabled" if narrative.status == "disabled" else "unavailable"
+    reasons = {
+        "opt_in_required": "A narrativa não foi solicitada. Pode consultar todo o relatório offline.",
+        "no_facts": "Sem jogos neste snapshot. Não há narrativa para apresentar.",
+        "no_verified_facts": "Os resultados disponíveis não estão verificados. Não se apresenta uma observação de golos.",
+        "timeout": "O modelo excedeu o tempo de espera. As estatísticas continuam disponíveis.",
+        "model_not_found": "O modelo indicado não está disponível localmente.",
+        "invalid_settings": "A configuração do modelo local não é válida.",
+        "connection_unavailable": "Não foi possível contactar o modelo local.",
+        "invalid_plan": "O plano não pôde ser verificado. Não se apresentam afirmações rejeitadas.",
+    }
+    message = reasons.get(
+        narrative.reason,
+        "Narrativa indisponível. O relatório factual mantém-se disponível.",
+    )
+    body = f'<p class="muted">{_e(message)}</p>'
+    if narrative.status == "available":
+        try:
+            if not isinstance(narrative.plan, NarrativePlan):
+                raise ValueError("missing_plan")
+            plan = NarrativePlan.model_validate_json(narrative.plan.model_dump_json())
+            bundle = build_available_facts(report)
+            GroundedNarrativeValidator(bundle).validate(plan)
+            if not any(
+                plan == candidate
+                for candidate in prepare_plans(report, bundle).values()
+            ):
+                raise ValueError("plan_outside_closed_catalog")
+            fact_id = plan.assertions[0].fact_ids[0]
+            index, match = next(
+                (index, match)
+                for index, match in enumerate(report.matches)
+                if f"match:{match.reference.source_match_id}" == fact_id
+            )
+            observation = (
+                f"No jogo de {match.kickoff_at.strftime('%d/%m/%Y')}, frente a "
+                f"{match.opponent_name}, a equipa marcou {match.goals_for} "
+                f"{'golo' if match.goals_for == 1 else 'golos'}."
+            )
+            references = "".join(
+                f"<li>{_e(reference.evidence_id)} · Versão {_e(reference.fact_version)}</li>"
+                for reference in plan.assertions[0].references
+            )
+            body = (
+                f'<p>{_e(observation)}</p><p><a href="#match-{index}">Consultar jogo {_e(match.reference.source_match_id)}</a></p>'
+                f'<p class="small">Amostra: {_e(plan.sample_size)} jogo. '
+                f"Cobertura da observação: 1/{len(report.matches)} jogos selecionados.</p>"
+                '<p class="notice">Esta observação descreve apenas um jogo; não é o total da janela. '
+                "A amostra é pequena e não permite concluir causas táticas ou prever resultados.</p>"
+                '<div class="reference-list"><details><summary>Detalhes técnicos e evidências</summary>'
+                f"<dl><dt>Facto</dt><dd>{_e(fact_id)}</dd><dt>Snapshot</dt><dd>{_e(bundle.snapshot_id)}</dd>"
+                f"<dt>Digest</dt><dd>{_e(bundle.evidence_digest)}</dd>"
+                f"<dt>Origem</dt><dd>{_e(bundle.source)}</dd></dl><ul>{references}</ul></details></div>"
+            )
+            state = "available"
+        except _INTERPRETATION_ERRORS:
+            body = f'<p class="muted">{_e(reasons["invalid_plan"])}</p>'
+    labels = {
+        "disabled": "Não solicitada",
+        "unavailable": "Indisponível",
+        "available": "Disponível · plano verificado",
+    }
+    return (
+        '<aside class="panel ai" id="analyst" aria-labelledby="analyst-title">'
+        '<div class="ai-header"><span class="ai-icon" aria-hidden="true">AI</span>'
+        '<div><h2 id="analyst-title">AI Analyst</h2><span class="small muted">Narrativa fundamentada</span></div></div>'
+        f'<span class="state" data-narrative-status="{state}">{labels[state]}</span>{body}'
+        '<p class="small muted">Seleção opcional de um plano conhecido. Valores e referências vêm do backend. Dados fictícios.</p></aside>'
+    )
+
+
 def _trend_number(value: int | float) -> str:
     """Limita a apresentação a três decimais; assinala aproximações sem alterar factos."""
     if isinstance(value, int):
@@ -275,6 +359,8 @@ def _trends(report: FactualReport) -> str:
 def render_dashboard(
     report: FactualReport,
     interpretation: InterpretationResult | None = None,
+    *,
+    narrative: NarrativeResult | None = None,
 ) -> str:
     """Renderiza valores do motor com escape, sem os recalcular ou contactar serviços.
 
@@ -283,6 +369,8 @@ def render_dashboard(
     """
     if report.source_instance_id != "fictional-local-demo":
         raise ValueError("O dashboard aceita apenas o relatório de demonstração.")
+    if narrative is not None and interpretation is not None:
+        raise ValueError("Escolha apenas uma camada opcional de interpretação.")
     competitive = report.metrics["competitive"]
     cards = []
     for key, title in [
@@ -365,7 +453,7 @@ def render_dashboard(
 <div class="hero"><span class="eyebrow">A pergunta analisada</span><blockquote>Analisa os últimos cinco jogos da minha equipa.</blockquote><p>Equipa {_e(report.selection.team_id)} · Época {_e(report.selection.season_id)} · Até {_e(report.selection.as_of.strftime("%d/%m/%Y · %H:%M UTC"))}</p></div>
 <div class="section-head"><div><h2>Resumo executivo factual</h2><p class="muted small">{_e(summary)}</p></div><span class="counter">{_e(count)}/{_e(report.selection.limit)} jogos</span></div>
 <div class="cards">{"".join(cards)}</div><div class="form-strip"><div><span class="eyebrow">Sequência · mais recente primeiro</span><ol class="sequence" aria-label="Sequência de resultados">{"".join(sequence)}</ol></div><p class="legend">V Vitória · E Empate · D Derrota · ? Não verificado</p></div></section>
-<section class="two-columns" aria-label="Jogos e interpretação"><article class="panel" id="games"><div class="panel-header"><div><h2>Jogos analisados</h2><p class="muted small">Ordem cronológica inversa · marcados–sofridos</p></div><span class="counter">{_e(count)} jogos</span></div>{match_content}</article>{_ai(report, interpretation)}</section>
+<section class="two-columns" aria-label="Jogos e interpretação"><article class="panel" id="games"><div class="panel-header"><div><h2>Jogos analisados</h2><p class="muted small">Ordem cronológica inversa · marcados–sofridos</p></div><span class="counter">{_e(count)} jogos</span></div>{match_content}</article>{_grounded_ai(report, narrative) if narrative is not None else _ai(report, interpretation)}</section>
 <section id="statistics" aria-labelledby="statistics-title"><div class="section-head"><div><h2 id="statistics-title">Estatísticas com contexto</h2><p class="muted small">Cobertura n/N dos jogos selecionados. Indisponível não significa zero.</p></div></div><div class="metrics">{metrics}</div></section>
 {_trends(report)}
 <section class="panel quality" aria-labelledby="quality-title"><h2 id="quality-title">Qualidade e limites de leitura</h2><ul>{warnings}<li>Dados fictícios: estados verified/complete são declarações da fixture, não certificação operacional.</li><li>Não se apresentam pontos oficiais sem regulamento validado.</li><li>Este HTML não prova autorização, autenticidade ou atualidade na origem.</li></ul></section>

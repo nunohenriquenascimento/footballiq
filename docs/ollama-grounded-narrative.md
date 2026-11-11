@@ -96,8 +96,9 @@ cliente nem efetuar rede. A CLI mantém a saída factual anterior.
 ```
 
 `--fixture complete_five|partial_match|empty` conserva os cenários existentes.
-`--with-narrative` não combina com `--with-llm` ou `--html`; o dashboard fica
-reservado para FI-009.2.3. `--ollama-url` conserva as restrições existentes.
+`--with-narrative` não combina com `--with-llm`. A integração HTML da FI-009.2.3.1
+aceita `--html --with-narrative`; consultar [dashboard fundamentado](grounded-narrative-dashboard.md).
+`--ollama-url` conserva as restrições existentes.
 
 O único cliente HTTP é o existente: liga a loopback literal, converte `localhost`
 em `127.0.0.1`, ignora proxies e recusa redirects. Não inicia serviços nem instala
