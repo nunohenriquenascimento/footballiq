@@ -13,6 +13,7 @@ from footballiq.analytics import FactualReport, analyze_recent_matches
 
 if TYPE_CHECKING:
     from footballiq.analyst_interpretation import ChatClient, InterpretationResult
+    from footballiq.grounded_narrative.orchestrator import NarrativeResult
 
 _FIXTURE_DIRECTORY = Path(__file__).resolve().parents[2] / "tests/fixtures/integration"
 _LOAD_ERRORS = (OSError, ValueError)
@@ -184,23 +185,7 @@ def run_demo(
     report = load_demo_report(scenario)
     factual = _render_report(report)
     if with_narrative:
-        from footballiq.grounded_narrative.orchestrator import (
-            NarrativeResult,
-            narrate_report,
-        )
-        from footballiq.ollama_client import (
-            OllamaClient,
-            OllamaSettings,
-            OllamaUnavailable,
-        )
-
-        try:
-            narrative_client = client or OllamaClient(
-                OllamaSettings(model=model, url=ollama_url)
-            )
-            result = narrate_report(report, enabled=True, client=narrative_client)
-        except OllamaUnavailable:
-            result = NarrativeResult("unavailable", "invalid_settings")
+        result = _select_narrative(report, model, ollama_url, client)
         return factual + (
             "\nNARRATIVA FUNDAMENTADA — observação de golos marcados num jogo\n"
             f"narrative_status={result.status}; reason={result.reason}\n"
@@ -239,10 +224,32 @@ def _select_interpretation(
     return interpretation
 
 
+def _select_narrative(
+    report: FactualReport, model: str, ollama_url: str, client: ChatClient | None
+) -> NarrativeResult:
+    """Partilha a fronteira opt-in entre texto e HTML sem alterar os timeouts."""
+    from footballiq.grounded_narrative.orchestrator import (
+        NarrativeResult,
+        narrate_report,
+    )
+    from footballiq.ollama_client import OllamaClient, OllamaSettings, OllamaUnavailable
+
+    try:
+        narrative_client = (
+            client
+            if client is not None
+            else OllamaClient(OllamaSettings(model=model, url=ollama_url))
+        )
+        return narrate_report(report, enabled=True, client=narrative_client)
+    except OllamaUnavailable:
+        return NarrativeResult("unavailable", "invalid_settings")
+
+
 def render_demo_dashboard(
     scenario: str = "complete_five",
     *,
     with_llm: bool = False,
+    with_narrative: bool = False,
     model: str = "",
     ollama_url: str = "http://127.0.0.1:11434",
     client: ChatClient | None = None,
@@ -251,6 +258,11 @@ def render_demo_dashboard(
     from footballiq.analyst_dashboard import render_dashboard
 
     report = load_demo_report(scenario)
+    if with_narrative:
+        if with_llm:
+            raise ValueError("Escolha --with-narrative ou --with-llm.")
+        narrative = _select_narrative(report, model, ollama_url, client)
+        return render_dashboard(report, narrative=narrative)
     interpretation = (
         _select_interpretation(report, model, ollama_url, client) if with_llm else None
     )
@@ -302,10 +314,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Abre o HTML no navegador depois de o guardar.",
     )
     arguments = parser.parse_args(argv)
-    if arguments.with_narrative and (arguments.with_llm or arguments.html):
-        parser.error(
-            "--with-narrative exige saída de texto e não combina com --with-llm."
-        )
+    if arguments.with_narrative and arguments.with_llm:
+        parser.error("--with-narrative não combina com --with-llm.")
     if not arguments.html and (
         arguments.output or arguments.overwrite or arguments.open
     ):
