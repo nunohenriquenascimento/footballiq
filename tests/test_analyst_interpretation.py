@@ -284,7 +284,7 @@ def test_http_request_schema_limits_and_no_tools(
     connection = MagicMock()
     response = connection.getresponse.return_value
     response.status = 200
-    response.read.return_value = envelope(json.dumps(selection()))
+    response.read1.side_effect = [envelope(json.dumps(selection())), b""]
     factory = MagicMock(return_value=connection)
     monkeypatch.setattr(http.http.client, "HTTPConnection", factory)
     monkeypatch.setenv("HTTP_PROXY", "http://invalid-proxy")
@@ -302,7 +302,8 @@ def test_http_request_schema_limits_and_no_tools(
     assert headers == {"Content-Type": "application/json"}
     assert payload["messages"][0]["role"] == "system"
     assert "não" in payload["messages"][0]["content"].lower()
-    response.read.assert_called_once_with(http.MAX_RESPONSE_BYTES + 1)
+    assert response.read1.call_count == 2
+    assert all(0 < read.args[0] <= 4096 for read in response.read1.call_args_list)
     connection.close.assert_called_once()
 
 

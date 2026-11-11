@@ -171,6 +171,7 @@ def run_demo(
     scenario: str = "complete_five",
     *,
     with_llm: bool = False,
+    with_narrative: bool = False,
     model: str = "",
     ollama_url: str = "http://127.0.0.1:11434",
     client: ChatClient | None = None,
@@ -182,6 +183,33 @@ def run_demo(
     """
     report = load_demo_report(scenario)
     factual = _render_report(report)
+    if with_narrative:
+        from footballiq.grounded_narrative.orchestrator import (
+            NarrativeResult,
+            narrate_report,
+        )
+        from footballiq.ollama_client import (
+            OllamaClient,
+            OllamaSettings,
+            OllamaUnavailable,
+        )
+
+        try:
+            narrative_client = client or OllamaClient(
+                OllamaSettings(model=model, url=ollama_url)
+            )
+            result = narrate_report(report, enabled=True, client=narrative_client)
+        except OllamaUnavailable:
+            result = NarrativeResult("unavailable", "invalid_settings")
+        return factual + (
+            "\nNARRATIVA FUNDAMENTADA — observação de golos marcados num jogo\n"
+            f"narrative_status={result.status}; reason={result.reason}\n"
+            + (
+                result.text + "\n"
+                if result.text
+                else "Narrativa indisponível; conserva-se o relatório factual.\n"
+            )
+        )
     if not with_llm:
         return factual
     from footballiq.analyst_interpretation import render_interpretation
@@ -243,6 +271,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Ativa seleção opcional de factos por Ollama.",
     )
     parser.add_argument(
+        "--with-narrative",
+        action="store_true",
+        help="Ativa planos fundamentados por seleção fechada em Ollama.",
+    )
+    parser.add_argument(
         "--model", default="", help="Nome exato de um modelo já instalado."
     )
     parser.add_argument(
@@ -269,17 +302,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Abre o HTML no navegador depois de o guardar.",
     )
     arguments = parser.parse_args(argv)
+    if arguments.with_narrative and (arguments.with_llm or arguments.html):
+        parser.error(
+            "--with-narrative exige saída de texto e não combina com --with-llm."
+        )
     if not arguments.html and (
         arguments.output or arguments.overwrite or arguments.open
     ):
         parser.error("--output, --overwrite e --open exigem --html.")
     try:
         renderer = render_demo_dashboard if arguments.html else run_demo
+        narrative_options = {"with_narrative": True} if arguments.with_narrative else {}
         output = renderer(
             arguments.fixture,
             with_llm=arguments.with_llm,
             model=arguments.model,
             ollama_url=arguments.ollama_url,
+            **narrative_options,
         )
     except _LOAD_ERRORS:
         print(
