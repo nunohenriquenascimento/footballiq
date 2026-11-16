@@ -1,0 +1,112 @@
+{
+  "one_mock": {
+    "status": "available",
+    "reason": "validated",
+    "text": "Forma recente: Vitórias: 2; Empates: 2; Derrotas: 1; Jogos sem sofrer golos: 2; Jogos sem marcar: 2; Média GF: 0,800; Média GA: 0,800. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 5/5; amostra 5. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 6@synthetic-match-6-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.",
+    "plan_ids": [
+      "insight:form"
+    ],
+    "references": [
+      "evidence:09e2ec85c5c6aa404831c841167c94c24282eb4776b40e7e0ed2e7dc110836de",
+      "evidence:14569ad61634ef5af18c1c9b95c516518eaaf7641eb2475c15bbaeb82374c266",
+      "evidence:c17605749098f8412d95be0dc3f9bfb930c0b35078d7454c678138b92f98bae4",
+      "evidence:e180bbbc88c28ea93af106e05698daa9a337786d54a1161113882877dd60c642",
+      "evidence:fd5e19c56432f362eae83af750c6734e1a6d5ff4f80f52c6fcd6c1740dd246e2"
+    ],
+    "snapshot_id": "synthetic-five-v1",
+    "evidence_digest": "sha256:996c198c997f27b9fd5d89b6904fcf5bbbd61495e2ae24739ad770d2eb202255"
+  },
+  "three_mock": {
+    "status": "available",
+    "reason": "validated",
+    "text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.\nComparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 9@synthetic-match-9-v1; 10@synthetic-match-10-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1.\nDistribuição temporal dos golos: Minutos 00-14 contra: 3; Minutos 00-14 a favor: 2; Minutos 15-29 contra: 0; Minutos 15-29 a favor: 1; Minutos 30-44 contra: 0; Minutos 30-44 a favor: 0; Minutos 45-59 contra: 0; Minutos 45-59 a favor: 1; Minutos 60-74 contra: 1; Minutos 60-74 a favor: 0; Minutos 75-89 contra: 0; Minutos 75-89 a favor: 0; Minutos 90+ contra: 0; Minutos 90+ a favor: 0; Período 1 contra: 3; Período 1 a favor: 3; Período 2 contra: 1; Período 2 a favor: 1. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.analytics.v1; versões 10@synthetic-match-10-v1; 9@synthetic-match-9-v1; 8@synthetic-match-8-v1; 7@synthetic-match-7-v1.",
+    "plan_ids": [
+      "insight:form",
+      "insight:recent_vs_older",
+      "insight:temporal_goals"
+    ],
+    "references": [
+      "evidence:5646679ac7867a4d081255f07387dd2729c0f807d748bc7a274550df957cb069",
+      "evidence:914d9f521febd088386b6e8c4e4c3462759f362bb22eaedbbd668ff357fbc12f",
+      "evidence:ceafe5feaf0d6ed71f94508947ec96e2b4d14e280ea22a1b051e76143acb074d",
+      "evidence:e51c307632e9663800d09739d80900c48b3a71e48c85f5809bf16f7c8b955c41",
+      "evidence:1ea05b96b80a2ccb3164c88c5a6d02e3c6d8fb54ddf03133f810b653b12cac1b",
+      "evidence:afeddce0695031be4ac7c51af4832d248b15bae1a17baa047c26aa697311d862",
+      "evidence:b9fc12d14fe4df0398f0147e80baefe3fba28367ec657361a7f4497e6a492125",
+      "evidence:fb3e1a6c76bfd3edc3b19ff8e4268772e8cb4fca99b34b8cc958be3ca695e019",
+      "evidence:45d1a27b69ac827662d8c8d190ad5bd6b00b6f262fe291b5fa7231b8be86cdcb",
+      "evidence:ae15fea3d0ecd19e84ea9d8002f16409ef83c71a6241217a100055ae9422e644",
+      "evidence:d7d4963830ae719a409724abbd2b16efe761eb1274ca679965a31f83a0c072b9",
+      "evidence:dc246cabdc00cef31507ddd4bd870cb8729d274a8c16a60c6fc7090104ca0ed3"
+    ],
+    "snapshot_id": "synthetic-five-v1",
+    "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add"
+  },
+  "two_deterministic_original_fixture": {
+    "status": "available",
+    "reason": "deterministic",
+    "text": "Forma recente: Vitórias: 2; Empates: 2; Derrotas: 1; Jogos sem sofrer golos: 2; Jogos sem marcar: 2; Média GF: 0,800; Média GA: 0,800. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 5/5; amostra 5. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 6@synthetic-match-6-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.\nComparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=3): Média GF 1,333, Média GA 0,667; Antigos (n=2): Média GF 0,000, Média GA 1,000. Cobertura 5/5; amostra 5. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1; 6@synthetic-match-6-v1; 7@synthetic-match-7-v1.",
+    "plan_ids": [
+      "insight:form",
+      "insight:recent_vs_older"
+    ],
+    "references": [
+      "evidence:09e2ec85c5c6aa404831c841167c94c24282eb4776b40e7e0ed2e7dc110836de",
+      "evidence:14569ad61634ef5af18c1c9b95c516518eaaf7641eb2475c15bbaeb82374c266",
+      "evidence:c17605749098f8412d95be0dc3f9bfb930c0b35078d7454c678138b92f98bae4",
+      "evidence:e180bbbc88c28ea93af106e05698daa9a337786d54a1161113882877dd60c642",
+      "evidence:fd5e19c56432f362eae83af750c6734e1a6d5ff4f80f52c6fcd6c1740dd246e2",
+      "evidence:04958ec8f545a6b4b3bd02d0559d6e8086660c82eeb9ea111382a674061fca3e",
+      "evidence:2c6701cc740ef7842cedc6625dba70467996a7fe32459db3b676b8be24b99a2d",
+      "evidence:4598ec5964e3965beb6469922e681b78e18194f79e9378f3a8393ad2353c2eba",
+      "evidence:47edef1ac75e03b0f69e98c6cd56b7f04db34efba0fc364c500324119e2a052a",
+      "evidence:8ebc8ec213d59d80aeda029d8f09c5aed39b82b2da90fac9a2fc83b41e85c6c8"
+    ],
+    "snapshot_id": "synthetic-five-v1",
+    "evidence_digest": "sha256:996c198c997f27b9fd5d89b6904fcf5bbbd61495e2ae24739ad770d2eb202255"
+  },
+  "three_deterministic_rich_fixture": {
+    "status": "available",
+    "reason": "deterministic",
+    "text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.\nComparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 9@synthetic-match-9-v1; 10@synthetic-match-10-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1.\nDistribuição temporal dos golos: Minutos 00-14 contra: 3; Minutos 00-14 a favor: 2; Minutos 15-29 contra: 0; Minutos 15-29 a favor: 1; Minutos 30-44 contra: 0; Minutos 30-44 a favor: 0; Minutos 45-59 contra: 0; Minutos 45-59 a favor: 1; Minutos 60-74 contra: 1; Minutos 60-74 a favor: 0; Minutos 75-89 contra: 0; Minutos 75-89 a favor: 0; Minutos 90+ contra: 0; Minutos 90+ a favor: 0; Período 1 contra: 3; Período 1 a favor: 3; Período 2 contra: 1; Período 2 a favor: 1. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.analytics.v1; versões 10@synthetic-match-10-v1; 9@synthetic-match-9-v1; 8@synthetic-match-8-v1; 7@synthetic-match-7-v1.",
+    "plan_ids": [
+      "insight:form",
+      "insight:recent_vs_older",
+      "insight:temporal_goals"
+    ],
+    "references": [
+      "evidence:5646679ac7867a4d081255f07387dd2729c0f807d748bc7a274550df957cb069",
+      "evidence:914d9f521febd088386b6e8c4e4c3462759f362bb22eaedbbd668ff357fbc12f",
+      "evidence:ceafe5feaf0d6ed71f94508947ec96e2b4d14e280ea22a1b051e76143acb074d",
+      "evidence:e51c307632e9663800d09739d80900c48b3a71e48c85f5809bf16f7c8b955c41",
+      "evidence:1ea05b96b80a2ccb3164c88c5a6d02e3c6d8fb54ddf03133f810b653b12cac1b",
+      "evidence:afeddce0695031be4ac7c51af4832d248b15bae1a17baa047c26aa697311d862",
+      "evidence:b9fc12d14fe4df0398f0147e80baefe3fba28367ec657361a7f4497e6a492125",
+      "evidence:fb3e1a6c76bfd3edc3b19ff8e4268772e8cb4fca99b34b8cc958be3ca695e019",
+      "evidence:45d1a27b69ac827662d8c8d190ad5bd6b00b6f262fe291b5fa7231b8be86cdcb",
+      "evidence:ae15fea3d0ecd19e84ea9d8002f16409ef83c71a6241217a100055ae9422e644",
+      "evidence:d7d4963830ae719a409724abbd2b16efe761eb1274ca679965a31f83a0c072b9",
+      "evidence:dc246cabdc00cef31507ddd4bd870cb8729d274a8c16a60c6fc7090104ca0ed3"
+    ],
+    "snapshot_id": "synthetic-five-v1",
+    "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add"
+  },
+  "empty": {
+    "status": "unavailable",
+    "reason": "no_facts",
+    "text": "",
+    "plan_ids": [],
+    "references": [],
+    "snapshot_id": "",
+    "evidence_digest": ""
+  },
+  "repeated_family_rejected": {
+    "status": "unavailable",
+    "reason": "insufficient_diversity",
+    "text": "",
+    "plan_ids": [],
+    "references": [],
+    "snapshot_id": "",
+    "evidence_digest": ""
+  }
+}

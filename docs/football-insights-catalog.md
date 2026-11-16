@@ -1,8 +1,9 @@
 # Football Insights Catalog
 
 O catálogo acrescenta observações determinísticas ao AI Analyst sem alterar os
-contratos existentes, Analytics, Trends, persistência ou dashboard. Nesta fase,
-o catálogo **não está integrado com Ollama nem com o dashboard**.
+contratos existentes, Analytics, Trends, persistência ou dashboard. A
+[seleção múltipla](ollama-multi-insights.md) permite usar Ollama explicitamente
+na CLI textual. O dashboard continua sem integração com este catálogo.
 
 ## Utilização no backend
 
@@ -75,7 +76,7 @@ pois o renderer genérico `render_plan` não descreve os novos factos compostos.
 
 A expansão do bundle altera o seu digest e, consequentemente, **todos os IDs de
 evidência**, incluindo os dos factos antigos preservados. Uma futura integração
-Ollama deverá construir e selecionar planos a partir do mesmo bundle expandido;
+Ollama deve construir e selecionar planos a partir do mesmo bundle expandido;
 não pode reutilizar planos ou evidence_ids de outro bundle. As funções antigas
 continuam a gerar o seu catálogo e planos anteriores, sem alterações.
 

@@ -7,7 +7,7 @@ import hashlib
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from footballiq.analytics import FactualReport, analyze_recent_matches
 
@@ -173,6 +173,7 @@ def run_demo(
     *,
     with_llm: bool = False,
     with_narrative: bool = False,
+    insights: Literal["ollama", "deterministic"] | None = None,
     model: str = "",
     ollama_url: str = "http://127.0.0.1:11434",
     client: ChatClient | None = None,
@@ -184,6 +185,42 @@ def run_demo(
     """
     report = load_demo_report(scenario)
     factual = _render_report(report)
+    if insights is not None:
+        if with_llm or with_narrative or insights not in {"ollama", "deterministic"}:
+            raise ValueError("Escolha um único modo de interpretação.")
+        from footballiq.grounded_narrative.multi_insights import (
+            InsightNarrativeResult,
+            narrate_insights,
+        )
+        from footballiq.ollama_client import (
+            OllamaClient,
+            OllamaSettings,
+            OllamaUnavailable,
+        )
+
+        try:
+            insight_client = client
+            if insights == "ollama" and insight_client is None:
+                insight_client = OllamaClient(
+                    OllamaSettings(model=model, url=ollama_url)
+                )
+            result = narrate_insights(
+                report,
+                enabled=True,
+                client=insight_client,
+                deterministic=insights == "deterministic",
+            )
+        except OllamaUnavailable:
+            result = InsightNarrativeResult("unavailable", "invalid_settings")
+        return factual + (
+            "\nFOOTBALL INSIGHTS — seleção fundamentada de até três observações\n"
+            f"insights_status={result.status}; reason={result.reason}\n"
+            + (
+                result.text + "\n"
+                if result.text
+                else "Insights indisponíveis; conserva-se o relatório factual.\n"
+            )
+        )
     if with_narrative:
         result = _select_narrative(report, model, ollama_url, client)
         return factual + (
@@ -291,6 +328,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--model", default="", help="Nome exato de um modelo já instalado."
     )
     parser.add_argument(
+        "--insights",
+        choices=("ollama", "deterministic"),
+        help="Seleciona até três insights; deterministic não usa rede.",
+    )
+    parser.add_argument(
         "--ollama-url",
         default="http://127.0.0.1:11434",
         help="Endpoint HTTP de loopback; não aceita credenciais ou proxies.",
@@ -316,6 +358,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.with_narrative and arguments.with_llm:
         parser.error("--with-narrative não combina com --with-llm.")
+    if arguments.insights and (
+        arguments.with_narrative or arguments.with_llm or arguments.html
+    ):
+        parser.error(
+            "--insights não combina com --with-narrative, --with-llm ou --html."
+        )
     if not arguments.html and (
         arguments.output or arguments.overwrite or arguments.open
     ):
@@ -323,12 +371,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         renderer = render_demo_dashboard if arguments.html else run_demo
         narrative_options = {"with_narrative": True} if arguments.with_narrative else {}
+        insight_options = {"insights": arguments.insights} if arguments.insights else {}
         output = renderer(
             arguments.fixture,
             with_llm=arguments.with_llm,
             model=arguments.model,
             ollama_url=arguments.ollama_url,
             **narrative_options,
+            **insight_options,
         )
     except _LOAD_ERRORS:
         print(
