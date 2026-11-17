@@ -1,0 +1,301 @@
+{
+  "playwright": "1.63.0",
+  "browser": "157.0.4341.60",
+  "cases": [
+    {
+      "fixture": "1",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "2",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "3",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "timeout",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "invalid_selection",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "unknown",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "empty",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "1",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "2",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "3",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 5.640405700464182,
+      "http_requests": 0
+    },
+    {
+      "fixture": "timeout",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "invalid_selection",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "unknown",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    },
+    {
+      "fixture": "empty",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "checks": {
+        "titles": true,
+        "card_count": true,
+        "no_duplicate_ids": true,
+        "csp_and_resources": true,
+        "overflow_zoom_1": true,
+        "overflow_zoom_2": true,
+        "keyboard_details": true,
+        "match_links": true,
+        "contrast": true,
+        "print_details": true
+      },
+      "minimum_contrast": 6.175790156826499,
+      "http_requests": 0
+    }
+  ],
+  "failures": []
+}

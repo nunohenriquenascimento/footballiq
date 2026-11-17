@@ -1,0 +1,732 @@
+[
+  {
+    "case": "1_cards",
+    "kind": "synthetic_fake_client_offline",
+    "presentation": {
+      "status": "available",
+      "reason_code": "validated",
+      "message": "Seleção verificada no relatório atual.",
+      "items": [
+        {
+          "ordinal": 1,
+          "plan_id": "insight:form",
+          "family": "results",
+          "scope": "window",
+          "canonical_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.",
+          "display_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.trends.v1",
+          "match_refs": [
+            "match:7",
+            "match:8",
+            "match:9",
+            "match:10"
+          ],
+          "match_versions": [
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ],
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ],
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:5646679ac7867a4d081255f07387dd2729c0f807d748bc7a274550df957cb069",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:914d9f521febd088386b6e8c4e4c3462759f362bb22eaedbbd668ff357fbc12f",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:ceafe5feaf0d6ed71f94508947ec96e2b4d14e280ea22a1b051e76143acb074d",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:e51c307632e9663800d09739d80900c48b3a71e48c85f5809bf16f7c8b955c41",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        }
+      ],
+      "provenance": {
+        "snapshot_id": "synthetic-five-v1",
+        "snapshot_version": "synthetic-five-v1",
+        "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+        "source": "factual-engine",
+        "schema_version": "1.0",
+        "catalog_version": "footballiq.insights.v1",
+        "source_system": "match_tracker",
+        "source_instance_id": "fictional-local-demo",
+        "descriptive_limit": "Descrição da janela exportada; não constitui previsão."
+      }
+    }
+  },
+  {
+    "case": "2_cards",
+    "kind": "synthetic_fake_client_offline",
+    "presentation": {
+      "status": "available",
+      "reason_code": "validated",
+      "message": "Seleção verificada no relatório atual.",
+      "items": [
+        {
+          "ordinal": 1,
+          "plan_id": "insight:form",
+          "family": "results",
+          "scope": "window",
+          "canonical_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.",
+          "display_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.trends.v1",
+          "match_refs": [
+            "match:7",
+            "match:8",
+            "match:9",
+            "match:10"
+          ],
+          "match_versions": [
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ],
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ],
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:5646679ac7867a4d081255f07387dd2729c0f807d748bc7a274550df957cb069",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:914d9f521febd088386b6e8c4e4c3462759f362bb22eaedbbd668ff357fbc12f",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:ceafe5feaf0d6ed71f94508947ec96e2b4d14e280ea22a1b051e76143acb074d",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:e51c307632e9663800d09739d80900c48b3a71e48c85f5809bf16f7c8b955c41",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        },
+        {
+          "ordinal": 2,
+          "plan_id": "insight:recent_vs_older",
+          "family": "comparison",
+          "scope": "recent_vs_older",
+          "canonical_text": "Comparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 9@synthetic-match-9-v1; 10@synthetic-match-10-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1.",
+          "display_text": "Comparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.trends.v1",
+          "match_refs": [
+            "match:9",
+            "match:10",
+            "match:7",
+            "match:8"
+          ],
+          "match_versions": [
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ],
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ],
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:1ea05b96b80a2ccb3164c88c5a6d02e3c6d8fb54ddf03133f810b653b12cac1b",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:afeddce0695031be4ac7c51af4832d248b15bae1a17baa047c26aa697311d862",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:b9fc12d14fe4df0398f0147e80baefe3fba28367ec657361a7f4497e6a492125",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:fb3e1a6c76bfd3edc3b19ff8e4268772e8cb4fca99b34b8cc958be3ca695e019",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        }
+      ],
+      "provenance": {
+        "snapshot_id": "synthetic-five-v1",
+        "snapshot_version": "synthetic-five-v1",
+        "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+        "source": "factual-engine",
+        "schema_version": "1.0",
+        "catalog_version": "footballiq.insights.v1",
+        "source_system": "match_tracker",
+        "source_instance_id": "fictional-local-demo",
+        "descriptive_limit": "Descrição da janela exportada; não constitui previsão."
+      }
+    }
+  },
+  {
+    "case": "3_cards",
+    "kind": "synthetic_fake_client_offline",
+    "presentation": {
+      "status": "available",
+      "reason_code": "validated",
+      "message": "Seleção verificada no relatório atual.",
+      "items": [
+        {
+          "ordinal": 1,
+          "plan_id": "insight:form",
+          "family": "results",
+          "scope": "window",
+          "canonical_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 7@synthetic-match-7-v1; 8@synthetic-match-8-v1; 9@synthetic-match-9-v1; 10@synthetic-match-10-v1.",
+          "display_text": "Forma recente: Vitórias: 2; Empates: 1; Derrotas: 1; Jogos sem sofrer golos: 1; Jogos sem marcar: 1; Média GF: 1,000; Média GA: 1,000. Médias por jogo coberto, arredondadas a três casas decimais.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.trends.v1",
+          "match_refs": [
+            "match:7",
+            "match:8",
+            "match:9",
+            "match:10"
+          ],
+          "match_versions": [
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ],
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ],
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:5646679ac7867a4d081255f07387dd2729c0f807d748bc7a274550df957cb069",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:914d9f521febd088386b6e8c4e4c3462759f362bb22eaedbbd668ff357fbc12f",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:ceafe5feaf0d6ed71f94508947ec96e2b4d14e280ea22a1b051e76143acb074d",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:form",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:e51c307632e9663800d09739d80900c48b3a71e48c85f5809bf16f7c8b955c41",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        },
+        {
+          "ordinal": 2,
+          "plan_id": "insight:recent_vs_older",
+          "family": "comparison",
+          "scope": "recent_vs_older",
+          "canonical_text": "Comparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.trends.v1; versões 9@synthetic-match-9-v1; 10@synthetic-match-10-v1; 7@synthetic-match-7-v1; 8@synthetic-match-8-v1.",
+          "display_text": "Comparação descritiva de médias por jogo (arredondadas a três casas decimais): Recentes (n=2): Média GF 1,500, Média GA 0,500; Antigos (n=2): Média GF 0,500, Média GA 1,500.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.trends.v1",
+          "match_refs": [
+            "match:9",
+            "match:10",
+            "match:7",
+            "match:8"
+          ],
+          "match_versions": [
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ],
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ],
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:1ea05b96b80a2ccb3164c88c5a6d02e3c6d8fb54ddf03133f810b653b12cac1b",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:afeddce0695031be4ac7c51af4832d248b15bae1a17baa047c26aa697311d862",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:b9fc12d14fe4df0398f0147e80baefe3fba28367ec657361a7f4497e6a492125",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:recent_vs_older",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:fb3e1a6c76bfd3edc3b19ff8e4268772e8cb4fca99b34b8cc958be3ca695e019",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        },
+        {
+          "ordinal": 3,
+          "plan_id": "insight:temporal_goals",
+          "family": "timing",
+          "scope": "window",
+          "canonical_text": "Distribuição temporal dos golos: Minutos 00-14 contra: 3; Minutos 00-14 a favor: 2; Minutos 15-29 contra: 0; Minutos 15-29 a favor: 1; Minutos 30-44 contra: 0; Minutos 30-44 a favor: 0; Minutos 45-59 contra: 0; Minutos 45-59 a favor: 1; Minutos 60-74 contra: 1; Minutos 60-74 a favor: 0; Minutos 75-89 contra: 0; Minutos 75-89 a favor: 0; Minutos 90+ contra: 0; Minutos 90+ a favor: 0; Período 1 contra: 3; Período 1 a favor: 3; Período 2 contra: 1; Período 2 a favor: 1. Cobertura 4/4; amostra 4. Descrição da janela exportada; não constitui previsão. Snapshot synthetic-five-v1; catálogo footballiq.insights.v1; fórmula footballiq.analytics.v1; versões 10@synthetic-match-10-v1; 9@synthetic-match-9-v1; 8@synthetic-match-8-v1; 7@synthetic-match-7-v1.",
+          "display_text": "Distribuição temporal dos golos: Minutos 00-14 contra: 3; Minutos 00-14 a favor: 2; Minutos 15-29 contra: 0; Minutos 15-29 a favor: 1; Minutos 30-44 contra: 0; Minutos 30-44 a favor: 0; Minutos 45-59 contra: 0; Minutos 45-59 a favor: 1; Minutos 60-74 contra: 1; Minutos 60-74 a favor: 0; Minutos 75-89 contra: 0; Minutos 75-89 a favor: 0; Minutos 90+ contra: 0; Minutos 90+ a favor: 0; Período 1 contra: 3; Período 1 a favor: 3; Período 2 contra: 1; Período 2 a favor: 1.",
+          "formatting_status": "projected_v1",
+          "covered_matches": 4,
+          "selected_matches": 4,
+          "coverage": 1.0,
+          "sample_size": 4,
+          "subtotal_notice": "",
+          "descriptive_limit": "Descrição da janela exportada; não constitui previsão.",
+          "fact_version": "footballiq.insights.v1",
+          "formula_version": "footballiq.analytics.v1",
+          "match_refs": [
+            "match:10",
+            "match:9",
+            "match:8",
+            "match:7"
+          ],
+          "match_versions": [
+            [
+              "10",
+              "synthetic-match-10-v1"
+            ],
+            [
+              "9",
+              "synthetic-match-9-v1"
+            ],
+            [
+              "8",
+              "synthetic-match-8-v1"
+            ],
+            [
+              "7",
+              "synthetic-match-7-v1"
+            ]
+          ],
+          "match_event_ids": [
+            [
+              "10",
+              [
+                "1000",
+                "1001",
+                "1002",
+                "1003",
+                "1004",
+                "1005"
+              ]
+            ],
+            [
+              "9",
+              [
+                "1100"
+              ]
+            ],
+            [
+              "8",
+              [
+                "1200",
+                "1201"
+              ]
+            ],
+            [
+              "7",
+              [
+                "1300",
+                "1301"
+              ]
+            ]
+          ],
+          "evidence_refs": [
+            {
+              "fact_id": "insight:temporal_goals",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:45d1a27b69ac827662d8c8d190ad5bd6b00b6f262fe291b5fa7231b8be86cdcb",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:temporal_goals",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:ae15fea3d0ecd19e84ea9d8002f16409ef83c71a6241217a100055ae9422e644",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:temporal_goals",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:d7d4963830ae719a409724abbd2b16efe761eb1274ca679965a31f83a0c072b9",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            },
+            {
+              "fact_id": "insight:temporal_goals",
+              "fact_version": "footballiq.insights.v1",
+              "evidence_id": "evidence:dc246cabdc00cef31507ddd4bd870cb8729d274a8c16a60c6fc7090104ca0ed3",
+              "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+              "source": "factual-engine"
+            }
+          ]
+        }
+      ],
+      "provenance": {
+        "snapshot_id": "synthetic-five-v1",
+        "snapshot_version": "synthetic-five-v1",
+        "evidence_digest": "sha256:dac7fbd6ed0a8a23b66c82bcf7ba8af2c140c75d81b0420b634b2d781c723add",
+        "source": "factual-engine",
+        "schema_version": "1.0",
+        "catalog_version": "footballiq.insights.v1",
+        "source_system": "match_tracker",
+        "source_instance_id": "fictional-local-demo",
+        "descriptive_limit": "Descrição da janela exportada; não constitui previsão."
+      }
+    }
+  },
+  {
+    "case": "timeout",
+    "presentation": {
+      "status": "unavailable",
+      "reason_code": "timeout",
+      "message": "A seleção excedeu o tempo de espera; o relatório factual está disponível.",
+      "items": [],
+      "provenance": null
+    }
+  },
+  {
+    "case": "invalid_selection",
+    "presentation": {
+      "status": "unavailable",
+      "reason_code": "invalid_selection",
+      "message": "A seleção não pôde ser validada; não se apresentam observações.",
+      "items": [],
+      "provenance": null
+    }
+  },
+  {
+    "case": "unknown_reason",
+    "presentation": {
+      "status": "unavailable",
+      "reason_code": "unavailable",
+      "message": "Insights indisponíveis; o relatório factual está disponível.",
+      "items": [],
+      "provenance": null
+    }
+  },
+  {
+    "case": "tampered",
+    "presentation": {
+      "status": "unavailable",
+      "reason_code": "invalid_plan",
+      "message": "Não foi possível verificar a seleção neste relatório.",
+      "items": [],
+      "provenance": null
+    }
+  }
+]

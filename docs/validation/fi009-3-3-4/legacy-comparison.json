@@ -1,0 +1,62 @@
+[
+  {
+    "fixture": "complete_five",
+    "mode": "text_default",
+    "byte_equal": true
+  },
+  {
+    "fixture": "complete_five",
+    "mode": "text_deterministic",
+    "byte_equal": true
+  },
+  {
+    "fixture": "complete_five",
+    "mode": "text_fake_ollama",
+    "byte_equal": true
+  },
+  {
+    "fixture": "complete_five",
+    "mode": "default_html",
+    "byte_equal": true
+  },
+  {
+    "fixture": "partial_match",
+    "mode": "text_default",
+    "byte_equal": true
+  },
+  {
+    "fixture": "partial_match",
+    "mode": "text_deterministic",
+    "byte_equal": true
+  },
+  {
+    "fixture": "partial_match",
+    "mode": "text_fake_ollama",
+    "byte_equal": true
+  },
+  {
+    "fixture": "partial_match",
+    "mode": "default_html",
+    "byte_equal": true
+  },
+  {
+    "fixture": "empty",
+    "mode": "text_default",
+    "byte_equal": true
+  },
+  {
+    "fixture": "empty",
+    "mode": "text_deterministic",
+    "byte_equal": true
+  },
+  {
+    "fixture": "empty",
+    "mode": "text_fake_ollama",
+    "byte_equal": true
+  },
+  {
+    "fixture": "empty",
+    "mode": "default_html",
+    "byte_equal": true
+  }
+]

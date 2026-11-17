@@ -369,8 +369,8 @@ def test_legacy_api_and_cli_remain_compatible(capsys: pytest.CaptureFixture) -> 
     )
 
 
-@pytest.mark.parametrize("extra", ["--html", "--with-narrative", "--with-llm"])
-def test_insight_cli_does_not_change_html(extra: str) -> None:
+@pytest.mark.parametrize("extra", ["--with-narrative", "--with-llm"])
+def test_insight_cli_rejects_competing_layers(extra: str) -> None:
     with pytest.raises(SystemExit) as error:
         main(["--insights", "deterministic", extra])
     assert error.value.code == 2

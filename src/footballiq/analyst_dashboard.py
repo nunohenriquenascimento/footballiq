@@ -13,6 +13,7 @@ from footballiq.grounded_narrative.contract import (
     NarrativePlan,
     build_available_facts,
 )
+from footballiq.grounded_narrative.multi_insights import InsightNarrativeResult
 from footballiq.grounded_narrative.orchestrator import NarrativeResult, prepare_plans
 from footballiq.trends import TREND_LABELS, UNAVAILABLE_REASONS, calculate_trends
 
@@ -265,6 +266,129 @@ def _grounded_ai(report: FactualReport, narrative: NarrativeResult) -> str:
     )
 
 
+_INSIGHT_CSS = """
+.insight-cards{display:grid;gap:16px;list-style:none;padding:0;margin:16px 0}
+.insight-card{border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.insight-card p,.insight-card dd{overflow-wrap:anywhere}
+@media print{.insight-card{break-inside:avoid}}
+"""
+_INSIGHT_TITLES = {
+    ("results", "window"): "Forma recente",
+    ("results", "home"): "Resultados em casa",
+    ("results", "away"): "Resultados fora",
+    ("comparison", "recent_vs_older"): "Comparação temporal",
+    ("comparison", "home_vs_away"): "Comparação casa e fora",
+    ("timing", "window"): "Distribuição temporal dos golos",
+    ("sequence", "window_suffix"): "Sequência recente",
+}
+
+
+def _multi_insights_ai(report: FactualReport, result: InsightNarrativeResult) -> str:
+    """Revalida a seleção no adaptador antes de gerar um único painel offline."""
+    from footballiq.insight_presentation import prepare_insights_presentation
+
+    presentation = prepare_insights_presentation(report, result)
+    if presentation.status == "not_requested":
+        return _ai(report, None)
+    labels = {"available": "Seleção verificada", "disabled": "Não solicitada"}
+    body = f'<p class="muted">{_e(presentation.message)}</p>'
+    shared = presentation.provenance
+    if presentation.status == "available" and shared is not None:
+        anchors = {
+            f"match:{match.reference.source_match_id}": index
+            for index, match in enumerate(report.matches)
+        }
+        cards = []
+        for card in presentation.items:
+            title = _INSIGHT_TITLES.get((card.family, card.scope), "Observação factual")
+            links = " · ".join(
+                f'<a href="#match-{_e(anchors[ref])}">Consultar {_e(ref)}</a>'
+                for ref in card.match_refs
+                if ref in anchors
+            )
+            subtotal = (
+                f'<p class="subtotal">{_e(card.subtotal_notice)}</p>'
+                if card.subtotal_notice
+                else ""
+            )
+            limit = (
+                f'<p class="small muted">{_e(card.descriptive_limit)}</p>'
+                if card.descriptive_limit and not shared.descriptive_limit
+                else ""
+            )
+            versions = "".join(
+                f"<li>Jogo {_e(identity)} · versão {_e(version)}</li>"
+                for identity, version in card.match_versions
+            )
+            events = "".join(
+                f"<li>Jogo {_e(identity)} · eventos {_e(', '.join(ids) or 'Nenhum')}</li>"
+                for identity, ids in card.match_event_ids
+            )
+            evidence = "".join(
+                f"<li>Facto {_e(ref.fact_id)} · versão {_e(ref.fact_version)} · "
+                f"evidência {_e(ref.evidence_id)} · digest {_e(ref.evidence_digest)} · "
+                f"origem {_e(ref.source)}</li>"
+                for ref in card.evidence_refs
+            )
+            formatting = (
+                "Projeção visual não disponível; apresenta-se o texto canónico integral."
+                if card.formatting_status == "canonical_fallback"
+                else "Projeção visual v1 verificada."
+            )
+            cards.append(
+                f'<li><article class="insight-card" aria-labelledby="insight-title-{_e(card.ordinal)}">'
+                f'<h3 id="insight-title-{_e(card.ordinal)}">{_e(card.ordinal)}. {_e(title)}</h3>'
+                f'<p class="insight-text">{_e(card.display_text)}</p>'
+                f'<p class="small">Cobertura {_e(card.covered_matches)}/{_e(card.selected_matches)}'
+                f" · amostra {_e(card.sample_size)}.</p>{subtotal}{limit}<p>{links}</p>"
+                '<div class="reference-list"><details><summary>Texto canónico e evidências da observação</summary>'
+                f'<p class="small">{_e(formatting)}</p>'
+                f'<p class="canonical-text">{_e(card.canonical_text)}</p>'
+                f"<dl><dt>Plano / facto</dt><dd>{_e(card.plan_id)}</dd>"
+                f"<dt>Família / âmbito</dt><dd>{_e(card.family)} / {_e(card.scope)}</dd>"
+                f"<dt>Versão do facto</dt><dd>{_e(card.fact_version)}</dd>"
+                f"<dt>Fórmula</dt><dd>{_e(card.formula_version)}</dd>"
+                f"<dt>Cobertura</dt><dd>{_e(card.coverage)}</dd></dl>"
+                f"<ul>{versions}{events}</ul><ul>{evidence}</ul>"
+                "</details></div></article></li>"
+            )
+        common = "".join(
+            f"<dt>{_e(label)}</dt><dd>{_e(value)}</dd>"
+            for label, value in (
+                ("Snapshot", shared.snapshot_id),
+                ("Versão do snapshot", shared.snapshot_version),
+                ("Digest", shared.evidence_digest),
+                ("Origem", shared.source),
+                (
+                    "Sistema / instância",
+                    f"{shared.source_system}/{shared.source_instance_id}",
+                ),
+                ("Contrato", shared.schema_version),
+                ("Catálogo", shared.catalog_version),
+            )
+        )
+        descriptive = (
+            f'<p class="notice">{_e(shared.descriptive_limit)}</p>'
+            if shared.descriptive_limit
+            else ""
+        )
+        body = (
+            f'<p class="small">{_e(len(presentation.items))} observações validadas.</p>'
+            f'<ol class="insight-cards">{"".join(cards)}</ol>{descriptive}'
+            '<div class="reference-list"><details><summary>Proveniência comum da seleção</summary>'
+            f"<dl>{common}</dl></details></div>"
+        )
+    return (
+        '<aside class="panel ai" id="analyst" aria-labelledby="analyst-title">'
+        '<div class="ai-header"><span class="ai-icon" aria-hidden="true">AI</span>'
+        '<div><h2 id="analyst-title">AI Analyst</h2>'
+        '<span class="small muted">Insights factuais fundamentados</span></div></div>'
+        f'<span class="state" data-insights-status="{_e(presentation.status)}">'
+        f"{_e(labels.get(presentation.status, 'Indisponível'))}</span>{body}"
+        '<p class="small muted">Valores e referências verificados pelo backend. Dados fictícios.</p></aside>'
+    )
+
+
 def _trend_number(value: int | float) -> str:
     """Limita a apresentação a três decimais; assinala aproximações sem alterar factos."""
     if isinstance(value, int):
@@ -361,6 +485,7 @@ def render_dashboard(
     interpretation: InterpretationResult | None = None,
     *,
     narrative: NarrativeResult | None = None,
+    insights: InsightNarrativeResult | None = None,
 ) -> str:
     """Renderiza valores do motor com escape, sem os recalcular ou contactar serviços.
 
@@ -369,8 +494,15 @@ def render_dashboard(
     """
     if report.source_instance_id != "fictional-local-demo":
         raise ValueError("O dashboard aceita apenas o relatório de demonstração.")
-    if narrative is not None and interpretation is not None:
+    if sum(layer is not None for layer in (interpretation, narrative, insights)) > 1:
         raise ValueError("Escolha apenas uma camada opcional de interpretação.")
+    analyst = (
+        _multi_insights_ai(report, insights)
+        if insights is not None
+        else _grounded_ai(report, narrative)
+        if narrative is not None
+        else _ai(report, interpretation)
+    )
     competitive = report.metrics["competitive"]
     cards = []
     for key, title in [
@@ -443,7 +575,7 @@ def render_dashboard(
     return f"""<!doctype html>
 <html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'none'; connect-src 'none'; img-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="referrer" content="no-referrer"><title>FootballIQ · AI Analyst · Demonstração</title><style>{_CSS}</style></head>
+<meta name="referrer" content="no-referrer"><title>FootballIQ · AI Analyst · Demonstração</title><style>{_CSS}{_INSIGHT_CSS if insights is not None else ""}</style></head>
 <body><a class="skip" href="#content">Saltar para o conteúdo</a>
 <header class="sidebar"><div class="brand"><span class="brand-mark">FIQ</span><span class="brand-name">Football<small>IQ</small></span></div>
 <nav aria-label="Navegação do relatório"><a href="#overview">Visão geral</a><a href="#games">Jogos analisados</a><a href="#statistics">Estatísticas</a><a href="#trends">Tendências</a><a href="#analyst">AI Analyst</a><a href="#references">Referências</a></nav>
@@ -453,7 +585,7 @@ def render_dashboard(
 <div class="hero"><span class="eyebrow">A pergunta analisada</span><blockquote>Analisa os últimos cinco jogos da minha equipa.</blockquote><p>Equipa {_e(report.selection.team_id)} · Época {_e(report.selection.season_id)} · Até {_e(report.selection.as_of.strftime("%d/%m/%Y · %H:%M UTC"))}</p></div>
 <div class="section-head"><div><h2>Resumo executivo factual</h2><p class="muted small">{_e(summary)}</p></div><span class="counter">{_e(count)}/{_e(report.selection.limit)} jogos</span></div>
 <div class="cards">{"".join(cards)}</div><div class="form-strip"><div><span class="eyebrow">Sequência · mais recente primeiro</span><ol class="sequence" aria-label="Sequência de resultados">{"".join(sequence)}</ol></div><p class="legend">V Vitória · E Empate · D Derrota · ? Não verificado</p></div></section>
-<section class="two-columns" aria-label="Jogos e interpretação"><article class="panel" id="games"><div class="panel-header"><div><h2>Jogos analisados</h2><p class="muted small">Ordem cronológica inversa · marcados–sofridos</p></div><span class="counter">{_e(count)} jogos</span></div>{match_content}</article>{_grounded_ai(report, narrative) if narrative is not None else _ai(report, interpretation)}</section>
+<section class="two-columns" aria-label="Jogos e interpretação"><article class="panel" id="games"><div class="panel-header"><div><h2>Jogos analisados</h2><p class="muted small">Ordem cronológica inversa · marcados–sofridos</p></div><span class="counter">{_e(count)} jogos</span></div>{match_content}</article>{analyst}</section>
 <section id="statistics" aria-labelledby="statistics-title"><div class="section-head"><div><h2 id="statistics-title">Estatísticas com contexto</h2><p class="muted small">Cobertura n/N dos jogos selecionados. Indisponível não significa zero.</p></div></div><div class="metrics">{metrics}</div></section>
 {_trends(report)}
 <section class="panel quality" aria-labelledby="quality-title"><h2 id="quality-title">Qualidade e limites de leitura</h2><ul>{warnings}<li>Dados fictícios: estados verified/complete são declarações da fixture, não certificação operacional.</li><li>Não se apresentam pontos oficiais sem regulamento validado.</li><li>Este HTML não prova autorização, autenticidade ou atualidade na origem.</li></ul></section>
