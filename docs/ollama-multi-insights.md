@@ -208,7 +208,19 @@ print(result.text)
 Não se alteram as fixtures em disco. Os [resultados sintéticos completos](validation/fi009-3-2-1/examples.json)
 incluem uma e três observações, seleção determinística e fixture vazia.
 `run_demo(..., insights="deterministic"|"ollama")` é a extensão aditiva da API CLI.
-`--insights` não combina com `--with-llm`, `--with-narrative` ou `--html`.
+`--insights` não combina com `--with-llm` ou `--with-narrative`.
+O modo HTML é suportado com opt-in explícito e revalidação no renderer:
+
+```shell
+python -m footballiq.analyst_demo --html --insights deterministic --open
+```
+
+Com a fixture predefinida `complete_five`, este comando apresenta dois cartões,
+sem consultar Ollama. Na API Python, `render_demo_dashboard(insights="deterministic")`
+devolve o mesmo HTML sem gravar ficheiros nem abrir o navegador. O modo
+`insights="ollama"` reutiliza a seleção real existente apenas com opt-in; testes
+offline podem fornecer um cliente falso. `--output`, `--overwrite` e `--open`
+mantêm as regras de segurança anteriores, e abrir o navegador exige `--open`.
 Os comandos e resultados das opções antigas permanecem compatíveis.
 
 ## Estado da integração e avaliação

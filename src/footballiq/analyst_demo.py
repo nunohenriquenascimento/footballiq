@@ -13,6 +13,7 @@ from footballiq.analytics import FactualReport, analyze_recent_matches
 
 if TYPE_CHECKING:
     from footballiq.analyst_interpretation import ChatClient, InterpretationResult
+    from footballiq.grounded_narrative.multi_insights import InsightNarrativeResult
     from footballiq.grounded_narrative.orchestrator import NarrativeResult
 
 _FIXTURE_DIRECTORY = Path(__file__).resolve().parents[2] / "tests/fixtures/integration"
@@ -188,30 +189,7 @@ def run_demo(
     if insights is not None:
         if with_llm or with_narrative or insights not in {"ollama", "deterministic"}:
             raise ValueError("Escolha um único modo de interpretação.")
-        from footballiq.grounded_narrative.multi_insights import (
-            InsightNarrativeResult,
-            narrate_insights,
-        )
-        from footballiq.ollama_client import (
-            OllamaClient,
-            OllamaSettings,
-            OllamaUnavailable,
-        )
-
-        try:
-            insight_client = client
-            if insights == "ollama" and insight_client is None:
-                insight_client = OllamaClient(
-                    OllamaSettings(model=model, url=ollama_url)
-                )
-            result = narrate_insights(
-                report,
-                enabled=True,
-                client=insight_client,
-                deterministic=insights == "deterministic",
-            )
-        except OllamaUnavailable:
-            result = InsightNarrativeResult("unavailable", "invalid_settings")
+        result = _select_insights(report, insights, model, ollama_url, client)
         return factual + (
             "\nFOOTBALL INSIGHTS — seleção fundamentada de até três observações\n"
             f"insights_status={result.status}; reason={result.reason}\n"
@@ -238,6 +216,34 @@ def run_demo(
 
     interpretation = _select_interpretation(report, model, ollama_url, client)
     return factual + render_interpretation(interpretation)
+
+
+def _select_insights(
+    report: FactualReport,
+    insights: Literal["ollama", "deterministic"],
+    model: str,
+    ollama_url: str,
+    client: ChatClient | None,
+) -> InsightNarrativeResult:
+    """Partilha a seleção opt-in entre texto e HTML, sem retries ou nova política."""
+    from footballiq.grounded_narrative.multi_insights import (
+        InsightNarrativeResult,
+        narrate_insights,
+    )
+    from footballiq.ollama_client import OllamaClient, OllamaSettings, OllamaUnavailable
+
+    try:
+        insight_client = client
+        if insights == "ollama" and insight_client is None:
+            insight_client = OllamaClient(OllamaSettings(model=model, url=ollama_url))
+        return narrate_insights(
+            report,
+            enabled=True,
+            client=insight_client,
+            deterministic=insights == "deterministic",
+        )
+    except OllamaUnavailable:
+        return InsightNarrativeResult("unavailable", "invalid_settings")
 
 
 def _select_interpretation(
@@ -287,6 +293,7 @@ def render_demo_dashboard(
     *,
     with_llm: bool = False,
     with_narrative: bool = False,
+    insights: Literal["ollama", "deterministic"] | None = None,
     model: str = "",
     ollama_url: str = "http://127.0.0.1:11434",
     client: ChatClient | None = None,
@@ -295,6 +302,11 @@ def render_demo_dashboard(
     from footballiq.analyst_dashboard import render_dashboard
 
     report = load_demo_report(scenario)
+    if insights is not None:
+        if with_llm or with_narrative or insights not in {"ollama", "deterministic"}:
+            raise ValueError("Escolha um único modo de interpretação.")
+        result = _select_insights(report, insights, model, ollama_url, client)
+        return render_dashboard(report, insights=result)
     if with_narrative:
         if with_llm:
             raise ValueError("Escolha --with-narrative ou --with-llm.")
@@ -358,12 +370,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.with_narrative and arguments.with_llm:
         parser.error("--with-narrative não combina com --with-llm.")
-    if arguments.insights and (
-        arguments.with_narrative or arguments.with_llm or arguments.html
-    ):
-        parser.error(
-            "--insights não combina com --with-narrative, --with-llm ou --html."
-        )
+    if arguments.insights and (arguments.with_narrative or arguments.with_llm):
+        parser.error("--insights não combina com --with-narrative ou --with-llm.")
     if not arguments.html and (
         arguments.output or arguments.overwrite or arguments.open
     ):
