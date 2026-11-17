@@ -8,7 +8,7 @@ O dashboard HTML e a integração narrativa anterior permanecem intactos.
 
 ```text
 FactualReport → build_insights → um EvidenceBundle canónico
-→ prepare_insight_plans → prepare_insight_candidates
+→ prepare_insight_plans → prepare_insight_candidates → prepare_insight_shortlist
 → OllamaClient.chat ou seleção determinística explícita
 → validar IDs e famílias → render_insight para cada plano
 → InsightNarrativeResult disponível apenas se todos passarem
@@ -17,6 +17,8 @@ FactualReport → build_insights → um EvidenceBundle canónico
 O novo módulo `footballiq.grounded_narrative.multi_insights` disponibiliza:
 
 - `prepare_insight_candidates(bundle)`: filtra e ordena planos já existentes.
+- `prepare_insight_shortlist(bundle)`: conserva até um representante por família,
+  na mesma ordem determinística, mantendo o catálogo completo intacto.
 - `narrate_insights(report, *, enabled=False, client=None, deterministic=False)`:
   controla opt-in, seleção, validação e apresentação atómica.
 - `InsightNarrativeResult`: resultado imutável com `status`, `reason`, `text`,
@@ -41,7 +43,8 @@ Resposta admitida, sem outros campos:
 {"plan_ids":["insight:form","insight:recent_vs_older","insight:temporal_goals"]}
 ```
 
-Cada ID tem de pertencer aos candidatos preparados para esse pedido. O schema
+Cada ID tem de pertencer à shortlist efetivamente apresentada nesse pedido,
+mesmo quando outro ID também exista no catálogo completo. O schema
 usa enum, uniqueItems, minItems=1 e maxItems igual ao menor de três e do número
 de famílias disponíveis. O backend volta a validar essas regras, sem confiar
 no suporte do modelo a JSON Schema. Rejeita IDs repetidos, IDs desconhecidos,
@@ -57,7 +60,7 @@ o candidato atual correspondente, nunca recuperar evidências antigas.
 
 ## Relevância e diversidade
 
-Política `FI-009.3.2.1`, deliberadamente conservadora:
+Política `FI-009.3.2.1`, com shortlist da `FI-009.3.2.3.1`:
 
 | Família | Candidatos | Justificação |
 | --- | --- | --- |
@@ -66,7 +69,8 @@ Política `FI-009.3.2.1`, deliberadamente conservadora:
 | `timing` | temporal_goals | Contagens de eventos por períodos/minutos |
 | `sequence` | winning_run, winless_run, drawing_run, losing_run | Escolher uma descrição do sufixo final |
 
-No máximo um candidato por família. Uma seleção de uma só observação é válida;
+O catálogo mantém todas estas alternativas. A shortlist enviada ao modelo contém
+no máximo um candidato por família. Uma seleção de uma só observação é válida;
 não se exige preencher três posições nem incluir todas as famílias. A política
 reduz repetição entre candidatos compostos, mas não promete eliminar qualquer
 sobreposição de números entre famílias. Por exemplo, resultados e comparação
@@ -83,8 +87,28 @@ pelo catálogo mesmo com cobertura inferior a 80%.
 A ordenação determinística usa cobertura decrescente, depois amostra decrescente
 e, em empate, esta prioridade fixa: form, competitive, home, away,
 recent_vs_older, home_vs_away, temporal_goals, winning_run, winless_run,
-drawing_run, losing_run. Seleciona até três famílias. O LLM pode escolher e ordenar
-outros candidatos elegíveis, sem repetir família.
+drawing_run, losing_run. O primeiro elegível de cada família representa essa
+família na shortlist. Pode haver quatro representantes; a resposta continua
+limitada a três IDs. Ambos os modos usam esta mesma shortlist: o determinístico
+escolhe os primeiros três, ou menos se não existirem; o LLM pode escolher e ordenar
+entre um e três representantes apresentados. Não se fabricam opções em falta.
+
+A shortlist evita oferecer form e competitive simultaneamente. A regra de
+diversidade continua a ser validada pelo backend como defesa adicional, incluindo
+estado interno manipulado. O JSON Schema limita estrutura e IDs autorizados;
+a validação de famílias permanece explícita. Qualquer violação rejeita a seleção
+inteira, sem reparar a resposta ou apresentar parcialmente os planos válidos.
+
+O EvidenceBundle, snapshot, digest, fact_ids, evidence_ids, planos e templates
+não são alterados pela shortlist. `prepare_insight_candidates` preserva a API de
+todos os elegíveis; a nova API reduz apenas a superfície de escolha do pedido.
+As seleções anteriores que usam representantes continuam válidas. Alternativas
+fora da shortlist passam a ser rejeitadas com invalid_selection, embora continuem
+disponíveis no catálogo. O resultado determinístico anterior mantém-se.
+
+Esta redução não garante que um modelo escolha múltiplas observações nem comprova
+um viés pelos primeiros IDs. Na campanha anterior ambos os modelos escolheram
+alternativas redundantes; a explicação por ordem dos IDs continua a ser hipótese.
 
 Só entram insights gerais ou de grupos/sufixos; não se misturam observações
 individuais `match:*` com agregados. A API antiga continua a disponibilizar os
@@ -102,7 +126,7 @@ categorias: a família é metadado local da seleção, não uma afirmação nova
 | Fixture vazia | unavailable / no_facts |
 | Sem dados ou cobertura/amostra insuficiente | unavailable / no_eligible_insights |
 | Modo modelo sem cliente | unavailable / client_required |
-| Seleção malformada, vazia, IDs falsos ou duplicados | unavailable / invalid_selection |
+| Seleção malformada, vazia, IDs falsos, fora da shortlist ou duplicados | unavailable / invalid_selection |
 | Famílias repetidas | unavailable / insufficient_diversity |
 | Plano, referências, snapshot ou digest incompatível | unavailable / invalid_plan |
 | Timeout | unavailable / timeout |
@@ -187,23 +211,27 @@ incluem uma e três observações, seleção determinística e fixture vazia.
 `--insights` não combina com `--with-llm`, `--with-narrative` ou `--html`.
 Os comandos e resultados das opções antigas permanecem compatíveis.
 
-## Ensaio real posterior e limites
+## Estado da integração e avaliação
 
-Somente após revisão, com Ollama já instalado e modelo previamente disponível,
-poderá executar-se manualmente:
+O PR #11 foi integrado na main em 16/11/2026. A shortlist descrita neste
+ficheiro é uma correção posterior, transportada para a branch
+`fix/ollama-insight-shortlist` a partir da main que contém o PR #11.
+
+A campanha histórica no código anterior à shortlist teve zero seleções aceites
+em seis inferências. A revisão offline posterior aprovou a shortlist, mas os
+clientes falsos não demonstram sucesso de modelos reais. A nova campanha real
+obteve seis seleções múltiplas aceites em seis chamadas, três por modelo. A amostra
+é pequena e exclusivamente sintética; os resultados não garantem sucesso geral.
+Os resultados estão no [relatório da campanha](validation/fi009-3-2-3-2/README.md).
+
+A API real para modelos já instalados continua disponível, sem iniciar serviços:
 
 ```shell
 python -m footballiq.analyst_demo --insights ollama --model gemma3:270m
 ```
 
-Este comando real **não foi executado nesta tarefa**. O plano de ensaio é repetir
-seleções de uma e várias famílias, incluindo fixture vazia e cobertura parcial,
-registar aceitação, latência e motivos de indisponibilidade, e verificar invariância
-do factual/bundle. Não mudar timeouts, instalar modelos ou fazer retries automáticos.
-
-Os testes falsos demonstram segurança e repetibilidade, não qualidade de escolha
-de um modelo real ou latência de cold start. Continuam as limitações de origem
-confiável, autenticidade não certificada e ausência de payloads completos de eventos.
-O backend aplica relevância descritiva, sem significância estatística ou análise
-tática. Python >=3.14 mantém-se como requisito; quando indisponível localmente,
-a sua validação fica pendente para um CI posterior.
+Não há warmup, retries nem alteração automática de timeouts no produto. Qualquer
+preparação voluntária do modelo pertence a um orçamento diagnóstico separado.
+Continuam as limitações de origem confiável, autenticidade não certificada e
+relevância apenas descritiva, sem análise tática ou significância estatística.
+Python >=3.14 mantém-se como requisito; testes locais em 3.12 não validam 3.14.

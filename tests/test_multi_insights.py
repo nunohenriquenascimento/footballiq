@@ -128,17 +128,12 @@ def test_invalid_selection_is_atomic(
         ("insight:winning_run", "insight:winless_run"),
     ],
 )
-def test_repeated_families_are_not_presented(
+def test_unoffered_family_alternatives_are_not_presented(
     rich_report: FactualReport, ids: tuple[str, ...]
 ) -> None:
-    if ids[0] == "insight:winning_run":
-        # Os dois IDs não coexistem num catálogo factual: também têm de ser recusados.
-        expected = "invalid_selection"
-    else:
-        expected = "insufficient_diversity"
     result = multi.narrate_insights(rich_report, enabled=True, client=client_for(*ids))
     assert_unavailable(result)
-    assert result.reason == expected
+    assert result.reason == "invalid_selection"
 
 
 def test_small_catalog_respects_real_family_availability() -> None:
@@ -158,11 +153,19 @@ def test_partial_coverage_is_subtotal_not_zero() -> None:
     data = payload()
     data["matches"][2]["score"]["status"] = "unverified"
     report = analyze_recent_matches(data)
+    bundle = build_insights(report)
+    partial = multi.prepare_insight_candidates(bundle)["insight:form"]
+    assert partial.coverage == 4 / 5
+    partial_text = render_insight(partial, bundle)
+    assert "Cobertura 4/5" in partial_text and "Apenas subtotal" in partial_text
+    representative = next(iter(multi.prepare_insight_shortlist(bundle)))
     result = multi.narrate_insights(
-        report, enabled=True, client=client_for("insight:form")
+        report, enabled=True, client=client_for(representative)
     )
     assert result.status == "available"
-    assert "Cobertura 4/5" in result.text and "Apenas subtotal" in result.text
+    assert result.text == render_insight(
+        multi.prepare_insight_shortlist(bundle)[representative], bundle
+    )
     assert "insight:recent_vs_older" not in multi.prepare_insight_candidates(
         build_insights(report)
     )
@@ -373,15 +376,15 @@ def test_insight_cli_does_not_change_html(extra: str) -> None:
     assert error.value.code == 2
 
 
-def test_actual_comparison_family_repetition_is_rejected() -> None:
-    """Os dois tipos de comparação coexistem na fixture de cinco jogos."""
+def test_comparison_outside_shortlist_is_rejected() -> None:
+    """Os dois tipos coexistem no catálogo; só um é apresentado ao modelo."""
     result = multi.narrate_insights(
         load_demo_report(),
         enabled=True,
         client=client_for("insight:recent_vs_older", "insight:home_vs_away"),
     )
     assert_unavailable(result)
-    assert result.reason == "insufficient_diversity"
+    assert result.reason == "invalid_selection"
 
 
 def test_bundle_with_foreign_fact_snapshot_is_rejected(

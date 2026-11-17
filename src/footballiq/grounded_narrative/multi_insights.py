@@ -89,6 +89,23 @@ def prepare_insight_candidates(bundle: EvidenceBundle) -> dict[str, NarrativePla
     )
 
 
+def prepare_insight_shortlist(bundle: EvidenceBundle) -> dict[str, NarrativePlan]:
+    """Conserva o primeiro elegível de cada família, sem alterar o catálogo.
+
+    A ordem dos candidatos já prioriza cobertura, amostra e prioridade fixa.
+    A shortlist pode conter quatro famílias; cada resposta continua limitada
+    a três IDs e é validada apenas contra os representantes apresentados.
+    """
+    shortlist: dict[str, NarrativePlan] = {}
+    families: set[str] = set()
+    for identity, plan in prepare_insight_candidates(bundle).items():
+        family = _TOPICS[identity][0]
+        if family not in families:
+            shortlist[identity] = plan
+            families.add(family)
+    return shortlist
+
+
 class _InvalidSelection(ValueError):
     pass
 
@@ -179,20 +196,11 @@ def narrate_insights(
     try:
         # Esta é a única construção de bundle para todo o pedido.
         bundle = build_insights(report)
-        candidates = prepare_insight_candidates(bundle)
+        candidates = prepare_insight_shortlist(bundle)
         if not candidates:
             return InsightNarrativeResult("unavailable", "no_eligible_insights")
         if deterministic:
-            chosen: list[str] = []
-            families: set[str] = set()
-            for identity in candidates:
-                family = _TOPICS[identity][0]
-                if family not in families:
-                    chosen.append(identity)
-                    families.add(family)
-                if len(chosen) == MAX_INSIGHTS:
-                    break
-            identities = _validate_ids(chosen, candidates)
+            identities = _validate_ids(list(candidates)[:MAX_INSIGHTS], candidates)
         elif client is None:
             return InsightNarrativeResult("unavailable", "client_required")
         else:
